@@ -7,10 +7,6 @@ transport.tcp.port: 9300
 node.master: false
 node.data: true
 
-### Discovery Settings
-discovery.zen.minimum_master_nodes: 2
-discovery.zen.ping.unicast.hosts: [  "",  "",  "",  ]
-
 ### Hot / Warm Data Node Settings
 node.attr.box_type: warm
 
