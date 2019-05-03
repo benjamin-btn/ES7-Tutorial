@@ -62,10 +62,13 @@ function configure_es_yaml
     sudo echo "### For Response by External Request" | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
     sudo echo "network.bind_host: 0.0.0.0" | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
     sudo echo "network.publish_host: $ES_NODEIP" | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
-    sudo cat ${ES_ADDYML}.${SEQ} | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
+    sudo echo "" | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
 
+    sudo echo "### Discovery Settings" | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
     sudo echo "discovery.seed_hosts: [ \"\",  \"\",  \"\", ]" | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
     sudo echo "cluster.initial_master_nodes: [ \"\",  \"\",  \"\",  ]" | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
+
+    sudo cat ${ES_ADDYML}.${SEQ} | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
 
     # jvm options Configure for Heap Memory
     sudo cp -f ${ES_ETC}/${ES_JVM} ${ES_ETC}/${ES_JVM}.${ORG_SEQ}
