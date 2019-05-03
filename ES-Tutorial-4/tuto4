@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ES_URL="https://artifacts.elastic.co/downloads/elasticsearch"
-ES_RPM="elasticsearch-6.6.0.rpm"
+ES_RPM="elasticsearch-7.0.1-x86_64.rpm"
 
 ES_ETC="/etc/elasticsearch"
 ES_MYML="elasticsearch.yml"
@@ -12,7 +12,7 @@ ES_NODEIP=$(ifconfig | grep inet | grep -vE '127.0.0.1|inet6' | awk '{print $2}'
 ES_NODENAME=$(hostname -s)
 
 KB_URL="https://artifacts.elastic.co/downloads/kibana"
-KB_RPM="kibana-6.6.0-x86_64.rpm"
+KB_RPM="kibana-7.0.1-x86_64.rpm"
 KB_ETC="/etc/kibana"
 KB_MYML="kibana.yml"
 
