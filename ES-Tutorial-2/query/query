@@ -1,0 +1,86 @@
+# Index Settings
+PUT twitter
+{
+    "settings" : {
+        "index" : {
+            "number_of_shards" : 3, 
+            "number_of_replicas" : 1 
+        }
+    }
+}
+
+# CLI 
+# curl -XPUT -H 'Content-Type: application/json' http://{ES_URL}:9200/{index} -d '{ … }'
+
+# Index Remove
+DELETE twitter
+
+# Index Read only
+PUT twitter/_settings
+{
+    "index.blocks.read_only_allow_delete": true
+}
+
+# is Index
+HEAD twitter
+
+# Index Setting Info
+GET twitter/_settings
+
+# Index Statics Info
+GET twitter/_stats
+
+# Segment Info
+GET twitter/_segments
+
+# Index Info
+GET _cat/indices?v
+GET _cat/indices/twitter?v
+
+# Indexing by PUT Method
+PUT twitter/_doc/1
+{
+    "user" : "kimchy",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+
+# Index Create Operator
+PUT twitter/_doc/1?op_type=create
+{
+    "user" : "kimchy",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+
+PUT twitter/_doc/1/_create
+{
+    "user" : "kimchy",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+
+# Indexing by POST Method
+POST twitter/_doc
+{
+    "user" : "kimchy",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+
+# Getting a document by document id
+GET twitter/_doc/1
+
+# Getting a document by document id, only source field
+GET twitter/_doc/1/_source
+
+# Delete a document by document id 
+DELETE twitter/_doc/1
+
+# Getting a Cluster Health Info
+GET _cluster/health
+
+# Getting a Cluster Setting Info
+GET _cluster/settings
+
+

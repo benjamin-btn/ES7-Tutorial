@@ -1,0 +1,8 @@
+
+### For Head
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+
+### For Response by External Request
+network.host: 0.0.0.0
+

@@ -1,0 +1,28 @@
+
+2018-11-20 12:51:07,462 INFO      Preparing Action ID: 1, "rollover"
+2018-11-20 12:51:07,467 INFO      Trying Action ID: 1, "rollover": No description given
+2018-11-20 12:51:07,469 ERROR     alias "aliasname" not found.
+2018-11-20 12:51:07,469 ERROR     Failed to complete action: rollover.  <type 'exceptions.ValueError'>: Unable to perform index rollover with alias "aliasname". See previous logs for more details.
+2018-11-20 12:52:52,774 INFO      Preparing Action ID: 1, "rollover"
+2018-11-20 12:52:52,780 INFO      Trying Action ID: 1, "rollover": No description given
+2018-11-20 12:52:52,782 INFO      DRY-RUN MODE.  No changes will be made.
+2018-11-20 12:52:52,786 INFO      DRY-RUN: rollover: test-today result: {u'dry_run': True, u'conditions': {u'[max_docs: 2]': False, u'[max_age: 1d]': False}, u'new_index': u'test-2018-11-000021', u'acknowledged': False, u'old_index': u'test-2018-11-20', u'shards_acknowledged': False, u'rolled_over': False}
+2018-11-20 12:52:52,786 INFO      Action ID: 1, "rollover" completed.
+2018-11-20 12:52:52,786 INFO      Job completed.
+2018-11-20 12:53:53,852 ERROR     Schema error: extra keys not allowed @ data['filters']
+2018-11-20 12:54:27,064 INFO      Preparing Action ID: 1, "rollover"
+2018-11-20 12:54:27,070 INFO      Trying Action ID: 1, "rollover": No description given
+2018-11-20 12:54:27,072 INFO      DRY-RUN MODE.  No changes will be made.
+2018-11-20 12:54:27,075 INFO      DRY-RUN: rollover: test-today result: {u'dry_run': True, u'conditions': {u'[max_docs: 2]': False, u'[max_age: 1d]': False}, u'new_index': u'test-2018-11-000021', u'acknowledged': False, u'old_index': u'test-2018-11-20', u'shards_acknowledged': False, u'rolled_over': False}
+2018-11-20 12:54:27,076 INFO      Action ID: 1, "rollover" completed.
+2018-11-20 12:54:27,076 INFO      Job completed.
+2018-11-20 12:54:35,567 INFO      Preparing Action ID: 1, "rollover"
+2018-11-20 12:54:35,572 INFO      Trying Action ID: 1, "rollover": No description given
+2018-11-20 12:54:35,574 INFO      Performing index rollover
+2018-11-20 12:54:35,577 INFO      Action ID: 1, "rollover" completed.
+2018-11-20 12:54:35,577 INFO      Job completed.
+2018-11-20 12:55:06,598 INFO      Preparing Action ID: 1, "rollover"
+2018-11-20 12:55:06,604 INFO      Trying Action ID: 1, "rollover": No description given
+2018-11-20 12:55:06,606 INFO      Performing index rollover
+2018-11-20 12:55:06,686 INFO      Action ID: 1, "rollover" completed.
+2018-11-20 12:55:06,687 INFO      Job completed.

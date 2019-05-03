@@ -1,0 +1,17 @@
+actions:
+  1:
+    action: forcemerge
+    options:
+      max_num_segments: 1
+    filters:
+    - filtertype: pattern
+      kind: prefix
+      value: '^[a-z].*-'
+      exclude:
+    - filtertype: age
+      source: name
+      direction: older
+      timestring: '%Y-%m-%d'
+      unit: days
+      unit_count: 1
+      exclude:

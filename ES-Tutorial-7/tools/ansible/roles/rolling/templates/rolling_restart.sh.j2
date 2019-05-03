@@ -1,0 +1,51 @@
+#!/bin/bash
+
+hostname=`hostname -s`
+
+curl -XPUT 'localhost:9200/_cluster/settings?pretty' -H 'Content-Type: application/json' -d'
+{
+  "transient": {
+    "cluster.routing.allocation.enable": "new_primaries"
+  }
+}
+'
+
+curl -XPOST 'localhost:9200/_flush/synced?pretty'
+
+## end
+
+sudo service elasticsearch restart
+#systemctl stop elasticsearch
+
+#rpm -U /usr/local/src/elasticsearch-5.6.1.rpm
+#yum update -y java
+
+#systemctl start elasticsearch
+
+while true; do
+  cluster_health=`curl -s http://localhost:9200/_cat/nodes | grep -ic $hostname`
+
+  if [ $cluster_health -eq 1 ]; then
+    break
+  fi
+  echo "wait.."
+  sleep 5
+done
+
+curl -XPUT 'localhost:9200/_cluster/settings?pretty' -H 'Content-Type: application/json' -d'
+{
+  "transient": {
+    "cluster.routing.allocation.enable": null
+  }
+}
+'
+
+while true; do
+  cluster_health=`curl -s http://localhost:9200/_cat/health | grep -ic green`
+
+  if [ $cluster_health -eq 1 ]; then
+    break
+  fi
+  echo "wait.."
+  sleep 10
+done

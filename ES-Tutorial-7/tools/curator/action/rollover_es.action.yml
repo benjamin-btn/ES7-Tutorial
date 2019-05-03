@@ -1,0 +1,13 @@
+actions:
+  1:
+    action: rollover
+    options:
+      name: rollover-index
+      conditions:
+        max_age: 1d
+        max_docs: 2
+      extra_settings:
+        index.number_of_shards: 3
+        index.number_of_replicas: 1
+      continue_if_exception: False
+      disable_action: False

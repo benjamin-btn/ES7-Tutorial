@@ -1,0 +1,73 @@
+#!/bin/sh
+
+function elasticdump_analyzer
+{
+
+    if [ -z $1 ] || [ -z $2 ]; then
+        echo "Usage : ./elasticdump 1 SRC_INDEX DST_INDEX"
+    else
+        elasticdump   --input=http://localhost:9200/$1 --output=http://localhost:9200/$2 --type=analyzer
+    fi
+}
+
+function elasticdump_mapping
+{
+
+    if [ -z $1 ] || [ -z $2 ]; then
+        echo "Usage : ./elasticdump 2 SRC_INDEX DST_INDEX"
+    else
+        elasticdump   --input=http://localhost:9200/$1 --output=http://localhost:9200/$2 --type=mapping
+    fi
+}
+
+function elasticdump_data
+{
+
+    if [ -z $1 ] || [ -z $2 ]; then
+        echo "Usage : ./elasticdump 3 SRC_INDEX DST_INDEX"
+    else
+        elasticdump   --input=http://localhost:9200/$1 --output=http://localhost:9200/$2 --type=data
+    fi
+}
+
+function elasticdump_mapping_to_local_file
+{
+
+    if [ -z $1 ]; then
+        echo "Usage : ./elasticdump 4 SRC_INDEX"
+    else
+        elasticdump   --input=http://localhost:9200/$1 --output=./local_mapping.json --type=mapping
+    fi
+}
+
+function elasticdump_data_to_local_file
+{
+
+    if [ -z $1 ]; then
+        echo "Usage : ./elasticdump 5 SRC_INDEX"
+    else
+        elasticdump   --input=http://localhost:9200/$1 --output=./local_data.json --type=data
+    fi
+}
+
+if [ -z $1 ]; then
+        echo "##################### Menu ##############"
+        echo " $ ./elasticdump [Command]"
+        echo "#####################%%%%%%##############"
+        echo "         1 : elasticdump analyzer"
+        echo "         2 : elasticdump mapping"
+        echo "         3 : elasticdump data"
+        echo "         4 : elasticdump mapping to local file"
+        echo "         5 : elasticdump data to local file"
+        echo "#########################################";
+        exit 1;
+fi
+
+case "$1" in
+        "1" ) elasticdump_analyzer $2 $3;;
+        "2" ) elasticdump_mapping $2 $3;;
+        "3" ) elasticdump_data $2 $3;;
+        "4" ) elasticdump_mapping_to_local_file $2;;
+        "5" ) elasticdump_data_to_local_file $2;;
+        *) echo "Incorrect Command" ;;
+esac

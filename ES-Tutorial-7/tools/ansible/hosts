@@ -1,0 +1,4 @@
+#[master-node]
+#[data-node]
+[all-node]
+[rolling-node]

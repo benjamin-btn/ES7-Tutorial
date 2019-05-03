@@ -1,0 +1,19 @@
+actions: # https://www.elastic.co/guide/en/elasticsearch/client/curator/5.6/index.html
+  1:
+    action: delete_indices # curator action 
+    options:
+      ignore_empty_list: True # 
+      timeout_override: # https://www.elastic.co/guide/en/elasticsearch/client/curator/5.6/option_timeout_override.html
+      continue_if_exception: False # https://www.elastic.co/guide/en/elasticsearch/client/curator/5.6/option_continue.html
+      disable_action: False # https://www.elastic.co/guide/en/elasticsearch/client/curator/5.6/option_disable.html
+    filters:
+    - filtertype: pattern # https://www.elastic.co/guide/en/elasticsearch/client/curator/5.6/filtertype_pattern.html
+      kind: prefix
+      value: '^[a-z].*-'
+      exclude:
+    - filtertype: age # https://www.elastic.co/guide/en/elasticsearch/client/curator/5.6/filtertype_age.html
+      source: creation_date
+      direction: older
+      unit: days
+      unit_count: 0
+      exclude:

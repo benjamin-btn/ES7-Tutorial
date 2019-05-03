@@ -1,0 +1,31 @@
+actions:
+  1:
+   action: alias
+   options:
+      name: alias-today
+   add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: '^[a-z].*-'
+        exclude:
+      - filtertype: age
+        source: name
+        direction: younger
+        timestring: '%Y-%m-%d'
+        unit: days
+        unit_count: 1
+        exclude:
+   remove:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: '^[a-z].*-'
+        exclude:
+      - filtertype: age
+        source: name
+        direction: older
+        timestring: '%Y-%m-%d'
+        unit: days
+        unit_count: 1
+        exclude:

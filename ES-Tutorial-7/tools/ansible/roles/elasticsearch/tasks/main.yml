@@ -1,0 +1,108 @@
+- name: install dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - java
+    - unzip
+  become: yes
+
+- name: check elasticsearch is runnning
+  shell: ps aux | grep -v grep | grep -ic elastic
+  register: elasticsearch_checker
+  failed_when: elasticsearch_checker.rc == 2
+
+- name: download elasticsearch
+  get_url:
+    url: "{{ es_download_url }}"
+    dest: /home/ec2-user/elasticsearch-{{ es_version }}.rpm
+  when: elasticsearch_checker.stdout == "0"
+
+- name: install elasticsearch
+  yum:
+    name: /home/ec2-user/elasticsearch-{{ es_version }}.rpm
+    state: present
+  when: elasticsearch_checker.stdout == "0"
+  become: yes
+
+- name: create a directory for elasticsearch
+  file:
+    path: /var/lib/elasticsearch
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0755
+  when: elasticsearch_checker.stdout == "0"
+  become: yes
+
+- name: create a data directory for elasticsearch
+  file:
+    path: /etc/systemd/system/elasticsearch.service.d/
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: elasticsearch_checker.stdout == "0"
+  become: yes
+
+#- name: copy override config file
+#  template:
+#    src: override.conf.j2
+#    dest: /etc/systemd/system/elasticsearch.service.d/override.conf
+#  when: elasticsearch_checker.stdout == "0"
+
+- name: create a symlink elasticsearch config
+  file:
+    src: /etc/elasticsearch
+    dest: /var/lib/elasticsearch/config
+    state: link
+    owner: elasticsearch
+    group: elasticsearch
+  when: elasticsearch_checker.stdout == "0"
+  become: yes
+
+- name: modify default jvm heap size (Xms)
+  replace:
+    destfile: /var/lib/elasticsearch/config/jvm.options
+    regexp: -Xms2g
+    replace: -Xms{{ heap_size }}g
+  when: elasticsearch_checker.stdout == "0"
+  become: yes
+
+- name: modify default jvm heap size (Xmx)
+  replace:
+    destfile: /var/lib/elasticsearch/config/jvm.options
+    regexp: -Xmx2g
+    replace: -Xmx{{ heap_size }}g
+  when: elasticsearch_checker.stdout == "0"
+  become: yes
+
+- name: modify default jvm heap size (Xms) in ES 6.x
+  replace:
+    destfile: /var/lib/elasticsearch/config/jvm.options
+    regexp: -Xms1g
+    replace: -Xms{{ heap_size }}g
+  when: elasticsearch_checker.stdout == "0"
+  become: yes
+
+- name: modify default jvm heap size (Xmx) in ES 6.x
+  replace:
+    destfile: /var/lib/elasticsearch/config/jvm.options
+    regexp: -Xmx1g
+    replace: -Xmx{{ heap_size }}g
+  when: elasticsearch_checker.stdout == "0"
+  become: yes
+
+- name: copy elasticsearch config file
+  template:
+    src: elasticsearch.yml.j2
+    dest: /var/lib/elasticsearch/config/elasticsearch.yml
+  when: elasticsearch_checker.stdout == "0"
+  become: yes
+
+- name: reload systemd
+  command: systemctl daemon-reload
+  when: elasticsearch_checker.stdout == "0"
+  notify: restart elasticsearch
+  become: yes
+

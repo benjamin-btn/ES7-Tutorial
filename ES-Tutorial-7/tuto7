@@ -1,0 +1,71 @@
+#!/bin/bash
+
+function install_curator_package
+{
+    pip 2> /dev/null
+    if [ $? -ne 1 ]; then
+        sudo easy_install pip
+	sudo pip install elasticsearch-curator
+    fi
+
+}
+
+function configure_es_template
+{
+    curl -s localhost:9200 > /dev/null
+    if [ $? -ne 0 ]; then
+        echo "Your ES Process is not working yet"
+    else
+        curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/_template/estemplate -d '
+        {
+            "index_patterns": ["*"],
+            "order" : 0,
+            "settings": {
+                "index.routing.allocation.require.box_type" : "hot"
+            }
+        }'
+    fi
+
+}
+
+function install_elasticdump_package
+{
+    sudo yum -y install npm git
+    cd tools/elasticdump
+    git clone https://github.com/taskrabbit/elasticsearch-dump
+    cd elasticsearch-dump
+    sudo npm install elasticdump -g
+}
+
+function install_telegram_package
+{
+    sudo pip install python-telegram-bot
+}
+
+function install_ansible_package
+{
+    sudo yum -y install ansible
+
+}
+
+if [ -z $1 ]; then
+        echo "##################### Menu ##############"
+        echo " $ ./tuto7 [Command]"
+        echo "#####################%%%%%%##############"
+        echo "         1 : install curator package"
+        echo "         2 : configure es hot template"
+        echo "         3 : install elasticdump package"
+        echo "         4 : install telegram package"
+        echo "         5 : install ansible package"
+        echo "#########################################";
+        exit 1;
+fi
+
+case "$1" in
+        "1" ) install_curator_package;;
+        "2" ) configure_es_template;;
+        "3" ) install_elasticdump_package;;
+        "4" ) install_telegram_package;;
+        "5" ) install_ansible_package;;
+        *) echo "Incorrect Command" ;;
+esac

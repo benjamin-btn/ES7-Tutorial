@@ -1,0 +1,17 @@
+- name: download filebeat
+  get_url:
+    url: "{{ filebeat_download_url }}"
+    dest: /home/ec2-user/filebeat-{{ filebeat_version }}-x86_64.rpm
+
+- name: install filebeat
+  yum:
+    name: /home/ec2-user/filebeat-{{ filebeat_version }}-x86_64.rpm
+    state: present
+  become: true
+
+- name: copy filebeat config file
+  template:
+    src: filebeat.yml.j2
+    dest: /etc/filebeat/filebeat.yml
+  notify: restart filebeat
+  become: true

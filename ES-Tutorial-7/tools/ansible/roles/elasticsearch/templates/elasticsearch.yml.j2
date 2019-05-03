@@ -1,0 +1,20 @@
+cluster.name: {{ cluster_name }}
+node.name: {{ ansible_nodename }}
+node.master: {{ master|lower }}
+node.data: {{ data|lower }}
+path.data: /var/lib/elasticsearch/data
+path.logs: /var/lib/elasticsearch/logs
+network.bind_host: 0.0.0.0
+network.publish_host: {{ ansible_eth0["ipv4"]["address"] }}
+discovery.zen.minimum_master_nodes: {{ minimum_master_nodes }}
+http.port: 9200
+transport.tcp.port: 9300
+{% if groups['master-node'] is defined %}
+discovery.zen.ping.unicast.hosts: [ {% for host in groups['master-node'] %} "{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:9300", {% endfor %} ]
+{% else %}
+discovery.zen.ping.unicast.hosts: [ {% for host in groups['all-node'] %} "{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:9300", {% endfor %} ]
+{% endif %}
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+thread_pool.bulk.queue_size: 10000
+thread_pool.search.queue_size: 10000

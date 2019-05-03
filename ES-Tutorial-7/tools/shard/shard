@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ -z $1 ]; then
+    echo "Usage : ./shard localhost"
+else
+    while(true);
+    do
+        bash bulk $1 > /dev/null;
+        python search_test.py --url $1 --threads 1 --requests 1 --index_name bank;
+	python monworker.py
+	sleep 1
+    done
+fi

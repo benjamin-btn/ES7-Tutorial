@@ -1,0 +1,53 @@
+---
+- name: install elasticsearch (master-node)
+  hosts: master-node
+  vars:
+    - cluster_name: ansible-test
+    - master: true
+    - data: false
+    - heap_size: 2
+    - es_version: 6.6.0
+    - filebeat_version : 6.6.0
+  roles:
+    - elasticsearch
+    - filebeat
+
+- name: install elasticsearch (data-node)
+  hosts: data-node
+  vars:
+    - cluster_name: ansible-test
+    - master: false
+    - data: true
+    - heap_size: 2
+    - es_version: 6.6.0
+    - filebeat_version : 6.6.0
+  roles:
+    - elasticsearch
+    - filebeat
+
+- name: install elasticsearch (all-node)
+  hosts: all-node
+  vars:
+    - cluster_name: ansible-test
+    - master: true
+    - data: true
+    - heap_size: 2
+    - es_version: 6.6.0
+    - filebeat_version : 6.6.0
+  roles:
+    - elasticsearch
+    - filebeat
+
+- name: install filebeat
+  hosts: filebeat-node
+  vars:
+    - cluster_name: ansible-test
+    - filebeat_version : 6.6.0
+  roles:
+    - filebeat
+
+- name: rolling restart
+  hosts: rolling-node
+  serial: 1
+  roles:
+    - rolling

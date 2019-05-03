@@ -1,0 +1,1058 @@
+## Analysis
+# 애널라이저 확인
+POST _analyze
+{
+   "text": "Winter is coming!!!"
+}
+
+# standard
+POST _analyze
+{
+    "analyzer": "standard",
+    "text": "Winter is coming!!!"
+}
+
+# whitespace
+POST _analyze
+{
+    "analyzer": "whitespace",
+    "text": "Winter is coming!!!"
+}
+
+# english
+POST _analyze
+{
+    "analyzer": "english",
+    "text": "Winter is coming!!!"
+}
+
+# 사용자 정의 애널라이저
+PUT myanalyzer1
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "my_analyzer" : {
+                    "char_filter": [ "html_strip" ],
+                    "tokenizer": "standard",
+                    "filter": [ "uppercase" ]
+                }
+            }
+        }
+    }
+}
+
+POST myanalyzer1/_analyze
+{
+    "analyzer": "my_analyzer",
+    "text": "<b>Winter is coming!!!</b>"
+}
+
+PUT myanalyzer2
+{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "my_analyzer": {
+                    "tokenizer": "my_tokenizer"
+                }
+            },
+            "tokenizer": {
+                "my_tokenizer": {
+                    "type": "classic",
+                    "max_token_length": 5
+                }
+            }
+        }
+    }
+}
+
+POST myanalyzer2/_analyze
+{
+    "analyzer": "my_analyzer",
+    "text": "<b>Winter is coming!!!</b>"
+}
+
+# URI Search
+GET bank/_search?from=0&size=100&q=address:Fleet&sort=age:asc
+
+# Request Body Search
+GET bank/_search
+{
+    "query" : {
+        "term" : { "city.keyword": "Mulino" }
+    }
+}
+
+# Pagination
+GET bank/_search
+{
+    "from":0, "size": 2,
+    "query" : {
+        "match" : { "address": "Fleet" }
+    }
+}
+
+# max pagination size 변경
+PUT bank/_settings
+{
+  "index.max_result_window": 10001
+}
+
+# sort
+GET bank/_search
+{
+    "sort": {
+        "age": "desc"
+    }
+}
+
+# 스코어 계산방식
+GET bank/_search
+{
+    "explain": true,
+    "from":0, "size": 2,
+    "query" : {
+        "match" : { "address": "Fleet" }
+    }
+}
+
+# _source filtering
+GET bank/_search
+{
+    "_source": false, 
+    "sort": { "age": "desc" }
+}
+GET bank/_search
+{
+    "_source": [ "age","gender" ], 
+    "sort": { "age": "desc" }
+}
+GET bank/_search
+{
+    "_source": [ "*ge*" ], 
+    "sort": { "age": "desc" }
+}
+
+# highlight
+GET bank/_search
+{
+    "query": { 
+          "match": { 
+              "address": { 
+                  "query": "Fleet" 
+              } 
+          }
+      },
+      "highlight": {
+          "fields": {
+              "address": {}
+          }
+      }
+}
+
+# match query
+GET bank/_search
+{
+    "query": { 
+         "match": { "address": "345 Fleet" }
+    }
+}
+
+# boost
+GET bank/_search
+{
+    "query": {
+        "match": {
+            "address": {
+                "query": "345 Fleet",
+                "boost": 2.0
+            }
+        }
+    }
+}
+
+# match_phrase
+GET bank/_search
+{
+    "query": { 
+         "match_phrase": { "address": "Fleet Walk" }
+    }
+}
+
+# match_phrase_prefix
+GET bank/_search
+{
+    "query": { 
+         "match_phrase_prefix": { 
+             "address": "425 Fleet W"
+         }
+    }
+}
+
+# multi match
+POST multi_match_index/_doc
+{
+  "name": "ElasticSearch Engine",
+  "comment": "It's Best Solution"
+}
+
+POST multi_match_index/_doc
+{
+  "name": "Mongo DB",
+  "comment": "What is difference ElasticSearch Engine"
+}
+
+GET multi_match_index/_search
+{
+    "query": {
+        "multi_match": {
+            "query": "Engine",
+            "fields": [ "name", "comment"]
+        }
+    }
+}
+
+# query_string
+GET bank/_search
+{
+   "query": {
+        "query_string" : {
+            "query" : "Walk Flee*",
+            "fields": [ "address", "employer"]
+        }
+    }
+}
+
+# term
+GET bank/_search
+{
+    "query": {
+        "term" : {
+            "gender.keyword": "M"
+        }
+    }
+}
+
+# terms
+GET bank/_search
+{
+    "query": {
+        "terms" : {
+          "gender.keyword": ["F","M"]
+        }
+    }
+}
+
+# range
+GET bank/_search
+{
+    "query": {
+        "range" : {
+            "age": {
+                "gte": 25,
+                "lte": 30
+            }
+        }
+    }
+}
+
+# wildcard
+GET bank/_search
+{
+    "query": {
+        "wildcard" : { "lastname.keyword": "D*e" }
+    }
+}
+
+# bool
+GET bank/_search
+{
+    "query": { 
+        "bool": { 
+            "must": [
+               { "match": { "address": { "query": "Fleet" }}}
+            ],
+            "filter": [ 
+                { "term":  { "gender.keyword": "F" }}, 
+                { "range": { "age": { "gte": "30" }}} 
+            ]
+        }
+    }
+}
+
+# must
+GET bank/_search
+{
+    "query": { 
+        "bool": { 
+            "must": [
+               { "match": { "address": { "query": "Fleet" }}}
+            ]
+        }
+    }
+}
+
+# filter
+GET bank/_search
+{
+    "query": { 
+        "bool": { 
+            "filter": [
+               { "match": { "address": { "query": "Fleet" }}}
+            ]
+        }
+    }
+}
+
+# should
+GET bank/_search
+{
+    "query": { 
+        "bool": {
+            "should": [
+                { "match": { "state": { "query": "MI", "boost": 2 }}},
+                { "term": { "gender.keyword": { "value": "M" }}}
+            ],
+            "minimum_should_match" : 1
+        }
+    }
+}
+
+# must_not
+GET bank/_search
+{
+    "query": { 
+        "bool": { 
+            "must_not": [
+               { "match": { "address": { "query": "Fleet" }}}
+            ]
+        }
+    }
+}
+
+# bool all
+GET bank/_search
+{
+    "query": { 
+        "bool": {
+            "must": [ { "term":  { "gender.keyword": "F" }}],
+            "filter": [ { "range": { "age": { "lte": "30" }}}],
+            "should": [ { "match": { "state": { "query": "MI" }}},
+                               { "match": { "city": { "query": "Nogal" }}}],
+            "must_not": [ { "match": { "address": "Hope" }}]
+       }
+    }
+}
+
+## Static Mapping
+# Text Field
+PUT text_index1
+{
+    "mappings": {
+        "_doc": {
+            "properties": {
+                "title": {
+                    "type":  "text"
+                }
+            }
+        }
+    }
+}
+
+GET text_index1
+
+POST text_index1/_doc
+{
+  "title": "Text Field"
+}
+
+GET text_index1/_search
+
+GET text_index1/_search
+{
+    "query": {
+        "term" : {
+            "title": "Text Field"
+        }
+    }
+}
+
+GET text_index1/_search
+{
+    "query": {
+        "match" : {
+            "title": " Text Field"
+        }
+    }
+}
+
+# dynamic text field
+POST text_index2/_doc
+{
+  "title": "Text Field"
+}
+
+GET text_index2
+
+GET text_index2/_search
+
+GET text_index1/_search
+{
+    "query": {
+        "term" : {
+            "title": "Text Field"
+        }
+    }
+}
+
+GET text_index1/_search
+{
+    "query": {
+        "match" : {
+            "title": " Text Field"
+        }
+    }
+}
+
+# Keyword Field
+PUT keyword_index
+{
+    "mappings": {
+        "_doc": {
+            "properties": {
+                "title": {
+                    "type":  "keyword"
+                }
+            }
+        }
+    }
+}
+
+POST keyword_index/_doc
+{
+  "title": "Keyword Field"
+}
+
+GET keyword_index
+
+GET keyword_index/_search
+{
+    "query": {
+        "term" : {
+            "title": "Keyword Field"
+        }
+    }
+}
+
+GET keyword_index/_search
+{
+    "query": {
+        "match" : {
+            "title": " Keyword Field"
+        }
+    }
+}
+
+# Date Field
+PUT date_index
+{
+    "mappings": {
+        "_doc": {
+            "properties": {
+                "date": {
+                    "type": "date" 
+                }
+            }
+        }
+    }
+}
+
+GET date_index
+
+POST date_index/_doc
+{ "date": "2015-01-01" } 
+
+POST date_index/_doc
+{ "date": "2015-01-01T12:10:30Z" } 
+
+POST date_index/_doc
+{ "date": 1420070400001 }
+
+GET date_index/_search
+{
+  "sort": { "date": "asc"} 
+}
+
+# Date Dynamic Index
+POST date_dynamic1/_doc
+{ "date": "2015-01-01T12:10:30Z" } 
+
+GET date_dynamic1
+
+POST date_dynamic1/_doc
+{ "date": 1420070400001 } 
+
+POST date_dynamic2/_doc
+{ "date": 1420070400001 } 
+
+GET date_dynamic2
+
+POST date_dynamic2/_doc
+{ "date": "2015-01-01T12:10:30Z" }
+
+# Date Format Custominzing
+PUT date_index_format
+{
+    "mappings": {
+        "_doc": {
+            "properties": {
+                "date": {
+                    "type":   "date",
+                    "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+                }
+            }
+        }
+    }
+}
+
+# 지정되지 않은 포맷
+POST date_index_format/_doc
+{ "date": "2015-01-01T12:10:30Z" } 
+
+# 지정된 포맷
+POST date_index_format/_doc/
+{ "date": 1420070400001 } 
+
+# Object Field
+
+PUT object_index
+{
+    "mappings": {
+        "_doc": { 
+            "properties": {
+                "region": {
+                    "type": "keyword"
+                },
+                "manager": { 
+                    "properties": {
+                        "age":  { "type": "integer" },
+                        "name": { 
+                            "properties": {
+                                "first": { "type": "keyword" },
+                                "last":  { "type": "keyword" }
+}  }  }  }  }  }  }  }
+
+GET object_index
+
+# Mapping에 Field 추가하기
+PUT object_index/_mapping/_doc
+{
+    "properties": {
+        "region": {
+            "type": "keyword"
+        },
+        "manager": { 
+            "properties": {
+                "age":  { "type": "integer" },
+                "name": { 
+                    "properties": {
+                        "first": { "type": "keyword" },
+                        "last": { "type": "keyword" },
+                        "full": { "type": "text" }
+}  }  }  }  }  }
+
+GET object_index
+
+# Field Type 이 수정될까요?
+PUT object_index/_mapping/_doc
+{
+    "properties": {
+        "region": {
+            "type": "keyword"
+        },
+        "manager": { 
+            "properties": {
+                "age":  { "type": "integer" },
+                "name": { 
+                    "properties": {
+                        "first": { "type": "keyword" },
+                        "last": { "type": "keyword" },
+                        "full": { "type": "keyword" }
+}  }  }  }  }  }
+
+POST object_index/_doc
+{ 
+    "region": "US",
+    "manager": { 
+        "age":     30,
+        "name": { 
+            "first": "John",
+            "last":  "Smith",
+            "full": "Smith John"
+        }
+    }
+}
+
+GET object_index/_search
+
+# object field 검색하기
+GET object_index/_search
+{
+    "query": {
+        "match": {
+            "manager.name.first": {
+                "query": "John"
+            }
+        }
+    }
+}
+
+# Nested Field
+PUT nested_index
+{
+    "mappings": {
+        "_doc": {
+            "properties": {
+                "user": {
+                    "type": "nested" 
+                }
+            }
+        }
+    }
+}
+
+GET nested_index
+
+POST nested_index/_doc
+{
+   "user" : [ 
+        {
+            "first" : "John",
+            "last" :  "Smith"
+        },
+        {
+            "first" : "Alice",
+            "last" :  "White"
+        }
+    ]
+}
+
+GET nested_index
+
+# nested field 검색하기
+GET nested_index/_search
+{
+    "query": {
+        "nested": {
+            "path": "user",
+            "query": {
+                "bool": {
+                    "must": [
+                        { "match": { "user.first": "John" } },
+                        { "match": { "user.last": "Smith" } }
+                    ]
+                }
+            }
+        }
+    }
+}
+
+# _all Field
+PUT allfield
+{
+    "mappings": {
+        "_default_": {
+            "_all": {
+                "enabled": false
+            }
+        }
+    }
+}
+
+GET allfield
+
+POST allfield/_doc
+{
+  "all": "disabled setting"
+}
+
+POST allfield/test
+{
+  "all": "disabled setting"
+}
+
+GET allfield
+
+# copy_to 이용
+PUT copy_index
+{
+    "mappings": {
+        "_doc": {
+            "properties": {
+                "first_name": { "type": "text", "copy_to": "full_name" },
+                "last_name": { "type": "text", "copy_to": "full_name" },
+                "full_name": { "type": "text" }
+            }
+        }
+    }
+}
+
+GET copy_index
+
+# full_name 은 복제되는 필드라 인덱싱 안함
+POST copy_index/_doc
+{
+    "first_name": "John",
+    "last_name": "Smith"
+}
+
+GET copy_index/_search
+
+# full_name 필드로 검색
+GET copy_index/_search
+{
+    "query": {
+        "match": {
+            "full_name": "John"
+        }
+     }
+}
+
+# refresh
+
+POST refresh/_doc
+{
+  "msg": "first doc"
+}
+
+PUT refresh/_settings
+{
+    "index" : {
+        "refresh_interval" : "1s"
+    }
+}
+
+GET refresh/_settings
+
+GET refresh/_search
+
+# refresh interval off
+PUT refresh/_settings
+{
+    "index" : {
+        "refresh_interval" : -1
+    }
+}
+
+GET refresh/_settings
+
+POST refresh/_doc
+{
+  "msg": "second doc"
+}
+
+# 검색을 해도 인덱싱된 문서가 검색되지 않음
+GET refresh/_search
+
+# ?refresh=true 로 문서 인덱싱
+POST refresh/_doc?refresh=true
+{
+  "msg": "fourth doc"
+}
+
+# refresh interval 이 꺼져있음에도 인덱싱 가능
+GET refresh/_search
+
+PUT refresh/_settings
+{
+    "index" : {
+        "refresh_interval" : null
+    }
+}
+
+## 쿼리 튜닝하기
+
+# copy to 로 검색되는 필드 최소화
+PUT myindex
+{
+  "mappings": {
+    "_doc": {
+      "properties": {
+        "first_name": { "type": "text", "copy_to": "full_name" },
+        "last_name": { "type": "text", "copy_to": "full_name" },
+        "full_name": { "type": "text" }
+      }
+    }
+  }
+}
+
+# numeric filed 에 대해 keyword 로 매핑하기
+PUT nonum
+{ 
+  "mappings": { 
+    "_doc": { 
+      "properties": { 
+        "account_no": { 
+          "type": "keyword" 
+        }
+      }
+    }
+  }
+}
+
+POST nonum/_doc
+{  "account_no": "12345" }
+
+POST nonum/_doc
+{  "account_no": "22345" }
+
+GET nonum
+
+# 검색이나 range 쿼리는 가능
+GET nonum/_search
+{ 
+  "query": { 
+    "term": { "account_no": "12345" } 
+  } 
+}
+
+GET nonum/_search
+{ 
+  "query": { 
+    "range": { "account_no": { "gte": 12300 } 
+    } 
+  } 
+}
+
+# casting
+
+# 집계 등의 수치계산 불가
+POST nonum/_search?size=0
+{
+    "query" : {
+        "constant_score" : {
+            "filter" : {
+                "match_all" : {}
+            }
+        }
+    },
+    "aggs" : {
+        "hat_prices" : { "sum" : { "field" : "account_no" } }
+    }
+}
+
+# Wildcard 사용 자제
+GET bank/_search
+{ 
+  "query": {
+    "query_string" : { "query": "Flee*" }
+  }
+}
+
+GET bank/_search
+{ 
+  "query": { 
+    "match": { "address": "Fleet" }
+  } 
+}
+
+# exact match 검색을 할 때에는 match 대신 term 쿼리 사용
+PUT termquery
+{ 
+  "mappings": { 
+    "_doc": { 
+      "properties": { 
+        "gender": { "type": "keyword" }
+      }
+    }
+  }
+}
+        
+POST termquery/_doc
+{ "gender": "F" }
+
+GET termquery/_search
+{ 
+  "query": { 
+    "match": { 
+      "gender": { "query": "F" }
+    }
+  }
+}
+
+GET termquery/_search
+{ 
+  "query": { 
+    "term": { 
+      "gender": { "value": "F" }
+    }
+  }
+}
+
+# filter context 는 필터절 내부로
+GET bank/_search
+{
+  "query": { 
+    "bool": { 
+      "must": [ 
+        { 
+          "term":  { "gender.keyword": "F" } 
+        } 
+      ] 
+    }
+  }
+}
+
+GET bank/_search
+{
+  "query": { 
+    "bool": { 
+      "filter": [ 
+        { 
+          "term":  { "gender.keyword": "F" } 
+        } 
+      ] 
+    }
+  }
+}
+
+# bool 쿼리는 범위를 좁히면서 검색
+GET bank/_search
+{
+  "query": { 
+    "bool": {
+      "must": [ 
+        { 
+          "match": { "state": { "query": "MI" } }
+        }
+      ],            
+      "filter": [ 
+        { 
+          "range": { "age": { "lte": "30" } }
+        }
+      ]
+    }
+  }
+}
+
+GET bank/_search
+{
+  "query": { 
+    "bool": {
+      "filter": [
+        { 
+          "range": { "age": { "lte": "30" } }
+        }
+      ],
+      "must": [ 
+        { 
+          "match": { "state": { "query": "MI" } }
+        }
+      ] 
+    }
+  }
+}
+
+
+# 인덱싱이 끝난 인덱스는 검색성능을 위해 샤드들의 세그먼트를 하나로 병합
+GET _cat/segments/shakespeare?v
+
+POST shakespeare/_forcemerge?max_num_segments=1
+
+GET _cat/segments/shakespeare?v
+
+# Routing key 를 이용한 인덱싱
+POST rindex/_doc?routing=user1 
+{  
+  "title": "This is a document" 
+}
+
+GET rindex/_search
+
+POST rindex/_doc?routing=user1 
+{  
+  "title": "This is a document for fastcampus" 
+}
+
+POST rindex/_search
+{  
+  "query": {  
+    "match": { "title": "fastcampus" } 
+  } 
+}
+
+# Routing 과 같이 알아야할 Rollover api
+PUT logs-000001 
+{
+    "aliases": {
+        "logs_write": {}
+    }
+}
+
+POST logs_write/_doc
+{
+  "TEST": "TTT1"
+}
+
+POST logs_write/_doc
+{
+  "TEST": "TTT2"
+}
+
+# 문서가 2개 이상이면 인덱스 새로 생성
+POST logs_write/_rollover
+{
+    "conditions": {
+        "max_age":   "7d",
+        "max_docs":  2,
+        "max_size":  "5gb"
+    }
+}
+
+POST logs_write/_doc
+{
+  "TEST": "TTT1"
+}
+
+POST logs_write/_doc
+{
+  "TEST": "TTT2"
+}
+
+# 인덱스 이름을 지정해서 생성
+POST logs_write/_rollover/my_new_index_name1
+{
+  "conditions": {
+    "max_age":   "7d",
+    "max_docs":  2,
+    "max_size": "5gb"
+  }
+}
+
+POST logs_write/_doc
+{
+  "TEST": "TTT1"
+}
+
+POST logs_write/_doc
+{
+  "TEST": "TTT2"
+}
+
+# dry_run 으로 모의실행도 가능
+POST logs_write/_rollover/my_new_index_name2?dry_run
+{
+  "conditions": {
+    "max_age":   "7d",
+    "max_docs":  2,
+    "max_size": "5gb"
+  }
+}
+
+## 모니터링
+# thread_pool 정보 확인
+GET _nodes/thread_pool
+
+GET _cat/thread_pool/search?v
+

@@ -1,0 +1,90 @@
+#!/bin/sh
+
+INFLUXDB_URL="https://dl.influxdata.com/influxdb/releases"
+INFLUXDB_RPM="influxdb-1.7.4.x86_64.rpm"
+GRAFANA_URL="https://dl.grafana.com/oss/release"
+GRAFANA_RPM="grafana-5.4.3-1.x86_64.rpm"
+
+# InfluxDB Package Install
+function install_if_packages
+{
+    wget &> /dev/null
+    if [ $? -ne 1 ]; then
+        sudo yum -y install wget
+    fi
+
+    ls -alh /usr/local/src/influxdb* &> /dev/null
+    if [ $? -ne 0 ]; then
+        sudo wget -q ${INFLUXDB_URL}/${INFLUXDB_RPM} -O /usr/local/src/${INFLUXDB_RPM}
+    fi
+
+    rpm -ql influxdb > /dev/null
+    if [ $? -ne 0 ]; then
+        sudo rpm -ivh /usr/local/src/${INFLUXDB_RPM}
+    fi
+
+    pip &> /dev/null
+    if [ $? -ne 0 ]; then
+        sudo easy_install pip
+	sudo pip install urllib3
+	sudo pip install influxdb --ignore-installed
+    fi
+
+}
+
+# Start InfluxDB
+function start_if_process
+{
+    sudo systemctl daemon-reload
+    sudo systemctl enable influxdb.service
+    sudo systemctl restart influxdb.service
+}
+
+# Grafana Package Install
+function install_gf_packages
+{
+    wget 2> /dev/null
+    if [ $? -ne 1 ]; then
+        sudo yum -y install wget
+    fi
+
+    ls -alh /usr/local/src/grafana* 2> /dev/null
+    if [ $? -ne 0 ]; then
+        sudo wget -q ${GRAFANA_URL}/${GRAFANA_RPM} -O /usr/local/src/${GRAFANA_RPM}
+    fi
+
+    rpm -ql grafana > /dev/null
+    if [ $? -ne 0 ]; then
+        sudo yum -y install fontconfig urw-fonts
+        sudo rpm -ivh /usr/local/src/${GRAFANA_RPM}
+    fi
+}
+
+# Start Grafana
+function start_gf_process
+{
+    sudo systemctl daemon-reload
+    sudo systemctl enable grafana-server.service
+    sudo systemctl restart grafana-server.service
+}
+
+
+if [ -z $1 ]; then
+        echo "##################### Menu ##############"
+        echo " $ ./tuto6 [Command]"
+        echo "#####################%%%%%%##############"
+        echo "         1 : install influxdb packages"
+        echo "         2 : start influxdb process"
+        echo "         3 : install grafana packages"
+	echo "         4 : start grafana process"
+        echo "#########################################";
+        exit 1;
+fi
+
+case "$1" in
+        "1" ) install_if_packages;;
+        "2" ) start_if_process;;
+        "3" ) install_gf_packages;;
+        "4" ) start_gf_process;;
+        *) echo "Incorrect Command" ;;
+esac
