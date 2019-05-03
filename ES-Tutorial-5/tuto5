@@ -41,12 +41,10 @@ function configure_nori_mappings
             }
           },
           "mappings": {
-            "_doc": {
-              "properties": {
-                "norimsg": {
-                  "type": "text",
-                  "analyzer": "my_analyzer"
-                }
+            "properties": {
+              "norimsg": {
+                "type": "text",
+                "analyzer": "my_analyzer"
               }
             }
           }
