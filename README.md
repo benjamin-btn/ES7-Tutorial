@@ -20,7 +20,7 @@ EX 6.x 버전에서 7.x 버전으로 넘어오면서 다양한 변화가 있었�
 
 아래는 변경된 사항에 대해 다뤄볼 주제들입니다.
 
-* [Discovery Changes](###Discovery-Changes)
+* [Discovery Changes](#Discovery-Changes)
   + ES 클러스터 노드 Discovery 및 Master 선출과정 변경 ([공식 레퍼런스 페이지 참고](https://www.elastic.co/guide/en/elasticsearch/reference/current/discovery-settings.html))
 
 * Indices Changes
@@ -41,6 +41,6 @@ EX 6.x 버전에서 7.x 버전으로 넘어오면서 다양한 변화가 있었�
 * Settings Changes
   + node.name 의 default 값이 랜덤한 값에서 호스트네임으로 변경됨
 
-### Discovery Changes
+# Discovery Changes
 #### ES 클러스터 노드 Discovery 및 Master 선출과정 변경
 
