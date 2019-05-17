@@ -111,6 +111,10 @@ discovery.zen.ping.unicast.hosts: [  "{IP1}:9300",  "{IP2}:9300",  "{IP3}:9300",
 
 **주의할 점은 마스터 노드를 재시작 할 때 반드시 클러스터가 그린이 된 이후 다음 마스터 노드를 재시작**
 
+**7.x 버전부터는 마스터노드에 샤드에 데이터가 잔존해있으면 프로세스가 올라오지 않는다.
+/usr/share/elasticsearch/bin/elasticsearch-node repurpose 명령으로 샤드 내에 데이터를 clean up 해준 뒤 재시작해야한다**
+
+
 ```bash
 ### ES Node Role Settings
 node.master: true
