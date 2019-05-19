@@ -39,6 +39,7 @@ Master Node 1번 장비에서 실습합니다.
 
 1) cluster.name, node.name, network.host, http.cors.enabled, http.cors.allow-origin 추가설정
 2) **./tuto1 1 ./tuto1 2 실행 후 cluster.name 은 unique name 으로 별도 설정 필요**
+3) 7.x 부터 변경된 discovery 설정 추가
 
 ```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-1]$ ./tuto1 1
@@ -58,6 +59,10 @@ http.cors.allow-origin: "*"
 
 ### For Response by External Request
 network.host: 0.0.0.0
+
+### Discovery Settings
+discovery.seed_hosts: [ "{IP1}:9300",  ]
+cluster.initial_master_nodes: [ "{IP1}:9300",  ]
 
 ```
 

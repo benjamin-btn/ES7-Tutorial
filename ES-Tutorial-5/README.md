@@ -45,7 +45,7 @@ Elasticsearch 가 실행중인 아무 노드에서 실습합니다.
 
 ```
 
-4) Nori Analyzer 를 쓰기 위한 테스트 인덱스 생성
+4) Nori Analyzer 를 쓰기 위한 테스트 인덱스 생성(7.x 부터는 type 제외한 채 생성)
 
 ```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-5]$ ./tuto5 3
@@ -72,14 +72,12 @@ curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/noritest
     }
   },
   "mappings": {
-    "_doc": {
       "properties": {
         "norimsg": {
           "type": "text",
           "analyzer": "my_analyzer"
         }
       }
-    }
   }
 }'
 
