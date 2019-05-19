@@ -23,22 +23,22 @@ EX 6.x 버전에서 7.x 버전으로 넘어오면서 다양한 변화가 있었�
 * [Discovery Changes](#Discovery-Changes)
   + ES 클러스터 노드 Discovery 및 Master 선출과정 변경 
 
-* [Indices Changes](#Indices Changes)
+* [Indices Changes](#Indices-Changes)
   + 인덱스 Primary Shard default 개수 5개에서 1개로 변경
   + 세그먼트 refresh 방식 변경
 
-* [Mapping Changes](#Mapping Changes)
+* [Mapping Changes](#Mapping-Changes)
   + \_all meta field 세팅 불가
   + 내부적으로 인덱스 내의 매핑 이름을 \_doc 하나로 고정하면서 매핑의 사용을 제거
 
-* [Search & Query DSL Changes](#Search & Query DSL Changes)
+* [Search & Query DSL Changes](#Search-&-Query-DSL-Changes)
   + Adaptive Replica Selection 이 default 로 설정됨
   + Scroll Query 에 request\_cache 사용 불가
 
-* [Thread Pool Name Changes](#Thread Pool Name Changes)
+* [Thread Pool Name Changes](#Thread-Pool-Name-Changes)
   + bulk 가 write 로 완전히 변경됨(configure 관련 이름까지)
 
-* [Settings Changes](#Settings Changes)
+* [Settings Changes](#Settings-Changes)
   + node.name 의 default 값이 랜덤한 값에서 호스트네임으로 변경됨
 
 # Discovery Changes
