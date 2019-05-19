@@ -193,13 +193,6 @@ curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/noritest
 
 대학생 + 선교회
 
-![Optional Text](image/noridict2.jpeg)
-
-동시흥 + 분기점
-
-동시 + 흥분 + 기점
-
-
 ## Trouble Shooting
 
 ### Elasticsearch
