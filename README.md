@@ -6,7 +6,7 @@ ElasticSearch 첫 번째 튜토리얼을 기술합니다.
 
 ## Product 별 버전 상세
 ```
-Product Version. 7.0.1(2019/05/03 기준 Latest Ver.)
+Product Version. 7.0.1(2019/05/15 기준 Latest Ver.)
 ```
 * [Elasticsearch](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.0.1-x86_64.rpm)
 * [Kibana](https://artifacts.elastic.co/downloads/kibana/kibana-7.0.1-x86_64.rpm)

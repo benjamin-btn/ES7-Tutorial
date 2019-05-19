@@ -4,15 +4,6 @@ ElasticSearch 세 번째-1 튜토리얼을 기술합니다.
 
 본 스크립트는 외부 공인망을 기준으로 작성되었습니다.
 
-## Product 별 버전 상세
-```
-Product Version. 6.6.0(2019/02/07 기준 Latest Ver.)
-```
-* [Elasticsearch](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.6.0.rpm)
-* [Kibana](https://artifacts.elastic.co/downloads/kibana/kibana-6.6.0-x86_64.rpm)
-
-최신 버전은 [Elasticsearch 공식 홈페이지](https://www.elastic.co/downloads) 에서 다운로드 가능합니다.
-
 ## ElasticSearch Product 설치
 
 이 튜토리얼에서는 rpm 파일을 이용하여 실습합니다.
@@ -24,9 +15,9 @@ Master 2~3번 장비에서 실습합니다.
 ```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ~]$ sudo yum -y install git
 
-[ec2-user@ip-xxx-xxx-xxx-xxx ~]$ git clone https://github.com/benjamin-btn/ES-Tutorial-3-1.git
+[ec2-user@ip-xxx-xxx-xxx-xxx ~]$ git clone https://github.com/benjamin-btn/ES7-Tutorial.git
 
-[ec2-user@ip-xxx-xxx-xxx-xxx ~]$ cd ES-Tutorial-3-1
+[ec2-user@ip-xxx-xxx-xxx-xxx ~]$ cd ES7-Tutorial/ES-Tutorial-3-1
 
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-3-1]$ ./tuto3
 ##################### Menu ##############
@@ -140,7 +131,7 @@ discovery.zen.ping.unicast.hosts: [  "{IP1}:9300",  "{IP2}:9300",  "{IP3}:9300",
   "cluster_name" : "mytuto-es",
   "cluster_uuid" : "LTfRfk3KRLS31kQDROVu9A",
   "version" : {
-    "number" : "6.6.0",
+    "number" : "7.0.1",
     "build_flavor" : "default",
     "build_type" : "rpm",
     "build_hash" : "a9861f4",

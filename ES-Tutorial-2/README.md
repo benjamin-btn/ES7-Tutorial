@@ -13,9 +13,9 @@ Master Node 1번 장비에서 실습합니다.
 ```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ~]$ sudo yum -y install git
 
-[ec2-user@ip-xxx-xxx-xxx-xxx ~]$ git clone https://github.com/benjamin-btn/ES-Tutorial-2.git
+[ec2-user@ip-xxx-xxx-xxx-xxx ~]$ git clone https://github.com/benjamin-btn/ES7-Tutorial.git
 
-[ec2-user@ip-xxx-xxx-xxx-xxx ~]$ cd ES-Tutorial-2
+[ec2-user@ip-xxx-xxx-xxx-xxx ~]$ cd ES7-Tutorial/ES-Tutorial-2
 
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-2]$ ./tuto2
 ##################### Menu ##############
