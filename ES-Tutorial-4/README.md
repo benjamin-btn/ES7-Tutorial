@@ -68,8 +68,8 @@ transport.tcp.port: 9300
 
 4) node.master: false, node.data:true 로 role 동일 설정
 5) discovery.zen.minimum_master_nodes 기존장비와 동일 설정
-6) **discovery.zen.ping.unicast.hosts 는 직접 수정 필요, 기존에 설정한 마스터 노드 3대만 설정(데이터노드 아이피 설정 금지)**
-7) **./tuto4 1 ./tuto4 2 실행 후 discovery.zen.ping.unicast.hosts 에 기존 장비와 추가했던 노드 3대의 ip:9300 설정 필요**
+6) **~discovery.zen.ping.unicast.hosts~ discovery.seed_hosts, cluster.initial_master_nodes 는 직접 수정 필요, 기존에 설정한 마스터 노드 3대만 설정(데이터노드 아이피 설정 금지)**
+7) **./tuto4 1 ./tuto4 2 실행 후 ~discovery.zen.ping.unicast.hosts~ discovery.seed_hosts, cluster.initial_master_nodes 에 기존 장비와 추가했던 노드 3대의 ip:9300 설정 필요**
 
 ```bash
 ### ES Node Role Settings
@@ -77,8 +77,10 @@ node.master: false
 node.data: true
 
 ### Discovery Settings
-discovery.zen.minimum_master_nodes: 2
-discovery.zen.ping.unicast.hosts: [  "{IP1}:9300",  "{IP2}:9300",  "{IP3}:9300",  ]
+#discovery.zen.minimum_master_nodes: 2
+#discovery.zen.ping.unicast.hosts: [  "{IP1}:9300",  "{IP2}:9300",  "{IP3}:9300",  ]
+discovery.seed_hosts: [ "{IP1}:9300",  "{IP3}:9300",  "{IP3}:9300", ]
+cluster.initial_master_nodes: [ "{IP1}:9300",  "{IP3}:9300",  "{IP3}:9300", ]
 
 ```
 
