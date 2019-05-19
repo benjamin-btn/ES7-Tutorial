@@ -51,7 +51,7 @@ function install_hq
 function start_hq
 {
     cd /usr/local/elasticsearch-HQ/
-    sudo nohup python3 application.py & 
+    sudo nohup python3.4 application.py & 
 }
 
 
