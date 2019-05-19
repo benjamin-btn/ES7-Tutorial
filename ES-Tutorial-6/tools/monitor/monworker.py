@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 from influxdb import InfluxDBClient
 
-influxUrl = "http://localhost"
+influxUrl = "localhost"
 esUrl = "http://localhost:9200"
 
 def get_ifdb(db, host=influxUrl, port=8086, user='root', passwd='root'):
