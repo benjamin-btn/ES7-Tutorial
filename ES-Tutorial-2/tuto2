@@ -42,7 +42,7 @@ function install_hq
         sudo git clone https://github.com/ElasticHQ/elasticsearch-HQ.git
         cd elasticsearch-HQ/
         sudo yum -y install python34 python34-pip
-        sudo pip3 install -r requirements.txt
+        sudo pip3.4 install -r requirements.txt
     fi
     
 }
