@@ -68,16 +68,18 @@ node.data: true
 
 ```
 
-5) discovery.zen.minimum_master_nodes 추가 설정
-6) discovery.zen.ping.unicast.hosts 는 직접 수정 필요
+5) ~discovery.zen.minimum_master_nodes~ 7.x discovery 설정인 discovery.seed_hosts 추가 설정
+6) ~discovery.zen.ping.unicast.hosts~ 7.x discovery 설정인 cluster.initial_master_nodes 는 직접 수정 필요
 7) **./tuto3 1 ./tuto3 2 실행 후 discovery.zen.ping.unicast.hosts 에 기존 장비와 추가하는 노드 2대의 ip:9300 설정 필요**
 
 ```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-3-1]$ sudo vi /etc/elasticsearch/elasticsearch.yml
 
 ### Discovery Settings
-discovery.zen.minimum_master_nodes: 2
-discovery.zen.ping.unicast.hosts: [  "{IP1}:9300",  "{IP2}:9300",  "{IP3}:9300",  ]
+#discovery.zen.minimum_master_nodes: 2
+#discovery.zen.ping.unicast.hosts: [  "{IP1}:9300",  "{IP2}:9300",  "{IP3}:9300",  ]
+discovery.seed_hosts: [ "{IP1}:9300",  "{IP3}:9300",  "{IP3}:9300", ]
+cluster.initial_master_nodes: [ "{IP1}:9300",  "{IP3}:9300",  "{IP3}:9300", ]
 
 ```
 
@@ -97,8 +99,10 @@ node.master: true
 node.data: true
 
 ### Discovery Settings
-discovery.zen.minimum_master_nodes: 2
-discovery.zen.ping.unicast.hosts: [  "{IP1}:9300",  "{IP2}:9300",  "{IP3}:9300",  ]
+#discovery.zen.minimum_master_nodes: 2
+#discovery.zen.ping.unicast.hosts: [  "{IP1}:9300",  "{IP2}:9300",  "{IP3}:9300",  ]
+discovery.seed_hosts: [ "{IP1}:9300",  "{IP3}:9300",  "{IP3}:9300", ]
+cluster.initial_master_nodes: [ "{IP1}:9300",  "{IP3}:9300",  "{IP3}:9300", ]
 
 ```
 
