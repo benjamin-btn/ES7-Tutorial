@@ -19,6 +19,8 @@ KB_MYML="kibana.yml"
 SEQ="2nd"
 ORG_SEQ="org_2nd"
 
+git pull
+
 # ES Package Install
 function install_es_packages
 {

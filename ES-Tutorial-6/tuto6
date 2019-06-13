@@ -5,6 +5,8 @@ INFLUXDB_RPM="influxdb-1.7.4.x86_64.rpm"
 GRAFANA_URL="https://dl.grafana.com/oss/release"
 GRAFANA_RPM="grafana-5.4.3-1.x86_64.rpm"
 
+git pull
+
 # InfluxDB Package Install
 function install_if_packages
 {

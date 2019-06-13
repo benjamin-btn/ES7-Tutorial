@@ -1,5 +1,7 @@
 #!/bin/sh
 
+git pull
+
 # ES Nori Plugin Install
 function install_nori
 {
