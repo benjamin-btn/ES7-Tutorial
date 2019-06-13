@@ -29,11 +29,6 @@ function install_es_packages
         sudo yum -y install wget
     fi
 
-    java -version 2> /dev/null
-    if [ $? -ne 0 ]; then
-        sudo yum -y install java
-    fi
-
     ls -alh /usr/local/src/elasticsearch* 2> /dev/null
     if [ $? -ne 0 ]; then
         sudo wget -q ${ES_URL}/${ES_RPM} -O /usr/local/src/${ES_RPM}
@@ -95,7 +90,7 @@ if [ -z $1 ]; then
         echo "##################### Menu ##############"
         echo " $ ./tuto3-2 [Command]"
         echo "#####################%%%%%%##############"
-        echo "         1 : install java & elasticsearch packages"
+        echo "         1 : elasticsearch packages"
         echo "         2 : configure elasticsearch.yml & jvm.options"
         echo "         3 : start elasticsearch process"
         echo "#########################################";
