@@ -22,7 +22,7 @@ Master Node 1번 장비에서 실습합니다.
 ##################### Menu ##############
  $ ./tuto1 [Command]
 #####################%%%%%%##############
-         1 : install java & elasticsearch packages
+         1 : elasticsearch packages
          2 : configure elasticsearch.yml & jvm.options
          3 : start elasticsearch process
          4 : install kibana packages
