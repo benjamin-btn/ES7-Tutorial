@@ -21,7 +21,7 @@ EX 6.x 버전에서 7.x 버전으로 넘어오면서 다양한 변화가 있었�
 아래는 변경된 사항에 대해 다뤄볼 주제들입니다.
 
 * [Network Changes](#Network-Changes)
-  + ES 클러스터 노드 Discovery 및 Master 선출과정 변경 
+  + ES 클러스터 노드 Network 설정 제약조건 추가
 
 * [Discovery Changes](#Discovery-Changes)
   + ES 클러스터 노드 Discovery 및 Master 선출과정 변경 
