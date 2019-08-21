@@ -6,7 +6,7 @@ ElasticSearch 첫 번째 튜토리얼을 기술합니다.
 
 ## Product 별 버전 상세
 ```
-Product Version. 7.0.1(2019/05/15 기준 Latest Ver.)
+Product Version. 7.3.0(2019/08/21 기준 Latest Ver.)
 ```
 * [Elasticsearch](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.0.1-x86_64.rpm)
 * [Kibana](https://artifacts.elastic.co/downloads/kibana/kibana-7.0.1-x86_64.rpm)
@@ -40,6 +40,11 @@ EX 6.x 버전에서 7.x 버전으로 넘어오면서 다양한 변화가 있었�
 
 * [Settings Changes](#Settings-Changes)
   + node.name 의 default 값이 랜덤한 값에서 호스트네임으로 변경됨
+
+# Discovery Changes
+#### 단일 호스트 network.host 설정 시 discovery 설정 필수
+* 6.x 버전까지는 단일 호스트에서 discovery 설정 없이 network.host 를 정의할 수 있었습니다.
+* 7.x 버전부터는 localhost 로 서비스를 하는 것이 아니면 network.host 를 정의한 순간 discovery 를 필수로 해주어야 합니다.
 
 # Discovery Changes
 #### ES 클러스터 노드 Discovery 및 Master 선출과정 변경
