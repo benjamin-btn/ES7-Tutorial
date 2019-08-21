@@ -77,7 +77,7 @@ cluster.initial_master_nodes: [ "{IP1}:9300",  ]
 
 ```
 
-4) 두 파일 모두 수정이 완료되었으면 ./tuto1 3 을 실행하여 ES 프로세스 시작, 클러스터에 잘 조인되는지 확인
+4) 두 파일 모두 수정이 완료되었으면 ./tuto1 3 을 실행하여 ES 프로세스 시작, 클러스터가 잘 구성되었는지 확인
 
 ```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-1]$ ./tuto1 3
