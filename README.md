@@ -1,15 +1,15 @@
 # ES7-Tutorial
 
-ElasticSearch 첫 번째 튜토리얼을 기술합니다.
+ElasticSearch 튜토리얼을 기술합니다.
 
 본 스크립트는 외부 공인망을 기준으로 작성되었습니다.
 
 ## Product 별 버전 상세
 ```
-Product Version. 7.0.1(2019/05/15 기준 Latest Ver.)
+Product Version. 7.3.0(2019/08/21 기준 Latest Ver.)
 ```
-* [Elasticsearch](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.0.1-x86_64.rpm)
-* [Kibana](https://artifacts.elastic.co/downloads/kibana/kibana-7.0.1-x86_64.rpm)
+* [Elasticsearch](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.3.0-x86_64.rpm)
+* [Kibana](https://artifacts.elastic.co/downloads/kibana/kibana-7.3.0-x86_64.rpm)
 
 최신 버전은 [Elasticsearch 공식 홈페이지](https://www.elastic.co/downloads) 에서 다운로드 가능합니다.
 
@@ -19,6 +19,9 @@ EX 6.x 버전에서 7.x 버전으로 넘어오면서 다양한 변화가 있었�
 그 중 사용자가 직접 설정해야되는 부분과, default 로 설정되는 부분들에 대해 알아보겠습니다.
 
 아래는 변경된 사항에 대해 다뤄볼 주제들입니다.
+
+* [Network Changes](#Network-Changes)
+  + ES 클러스터 노드 Network 설정 제약조건 추가
 
 * [Discovery Changes](#Discovery-Changes)
   + ES 클러스터 노드 Discovery 및 Master 선출과정 변경 
@@ -40,6 +43,11 @@ EX 6.x 버전에서 7.x 버전으로 넘어오면서 다양한 변화가 있었�
 
 * [Settings Changes](#Settings-Changes)
   + node.name 의 default 값이 랜덤한 값에서 호스트네임으로 변경됨
+
+# Network Changes
+#### 단일 호스트 network.host 설정 시 discovery 설정 필수
+* 6.x 버전까지는 단일 호스트에서 discovery 설정 없이 network.host 를 정의할 수 있었습니다.
+* 7.x 버전부터는 localhost 로 서비스를 하는 것이 아니면 network.host 를 정의한 순간 discovery 설정을 필수로 해주어야 합니다.
 
 # Discovery Changes
 #### ES 클러스터 노드 Discovery 및 Master 선출과정 변경
