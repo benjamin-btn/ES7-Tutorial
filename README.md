@@ -47,7 +47,7 @@ EX 6.x 버전에서 7.x 버전으로 넘어오면서 다양한 변화가 있었�
 # Network Changes
 #### 단일 호스트 network.host 설정 시 discovery 설정 필수
 * 6.x 버전까지는 단일 호스트에서 discovery 설정 없이 network.host 를 정의할 수 있었습니다.
-* 7.x 버전부터는 localhost 로 서비스를 하는 것이 아니면 network.host 를 정의한 순간 discovery 를 필수로 해주어야 합니다.
+* 7.x 버전부터는 localhost 로 서비스를 하는 것이 아니면 network.host 를 정의한 순간 discovery 설정을 필수로 해주어야 합니다.
 
 # Discovery Changes
 #### ES 클러스터 노드 Discovery 및 Master 선출과정 변경
