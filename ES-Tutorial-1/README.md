@@ -161,4 +161,4 @@ path.logs: /var/log/elasticsearch 로 설정되어 cluster.name 이 적용된 �
 ```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-1]$ sudo vi /var/log/elasticsearch/mytuto-es.log
 ```
-
+  
