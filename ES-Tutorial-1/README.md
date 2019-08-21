@@ -124,7 +124,7 @@ cluster.initial_master_nodes: [ "{IP1}:9300",  ]
   "cluster_name" : "mytuto-es",
   "cluster_uuid" : "LTfRfk3KRLS31kQDROVu9A",
   "version" : {
-    "number" : "7.0.1",
+    "number" : "7.3.0",
     "build_flavor" : "default",
     "build_type" : "rpm",
     "build_hash" : "a9861f4",
