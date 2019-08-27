@@ -1,4 +1,4 @@
-# Index Settings
+## Index Settings 설정으로 인덱스 생성
 PUT twitter
 {
     "settings" : {
@@ -9,35 +9,64 @@ PUT twitter
     }
 }
 
-# CLI 
-# curl -XPUT -H 'Content-Type: application/json' http://{ES_URL}:9200/{index} -d '{ … }'
+## flat_settings 형태로도 생성 가능
+PUT twitter
+{
+  "settings" : {
+    "index.number_of_shards" : 3, 
+    "index.number_of_replicas" : 1 
+  }
+}
 
-# Index Remove
+## Index 삭제
 DELETE twitter
 
-# Index Read only
+## Index Read only - 삭제는 막을 수 없지만 read only 형태로 만드는 것은 가능
 PUT twitter/_settings
 {
     "index.blocks.read_only_allow_delete": true
 }
 
-# is Index
+PUT twitter/_settings
+{
+    "index.blocks.read_only_allow_delete": false
+}
+
+PUT twitter/_settings
+{
+    "index.blocks.read_only_allow_delete": null
+}
+
+## 해당 인덱스가 존재하는지 확인
 HEAD twitter
 
-# Index Setting Info
+## Index Setting 정보 확인
 GET twitter/_settings
 
-# Index Statics Info
+## Index Mapping 정보 확인
+# 7.x
+GET twitter/_mapping
+GET twitter/_mappings
+
+# 6.x
+GET twitter/_mapping
+GET twitter/_mappings
+GET twitter/_mapping/_doc
+GET twitter/_mappings/_doc
+
+## Index 통계 데이터 정보 확인
 GET twitter/_stats
 
-# Segment Info
+## 세그먼트 정보 확인
 GET twitter/_segments
 
-# Index Info
+## 클러스터 내 Index 상태 정보 확인
 GET _cat/indices?v
+
+## 특정 인덱스만 대상으로 정보 확인
 GET _cat/indices/twitter?v
 
-# Indexing by PUT Method
+## PUT Method 를 통해 문서의 ID 를 지정하여 색인
 PUT twitter/_doc/1
 {
     "user" : "kimchy",
@@ -45,7 +74,27 @@ PUT twitter/_doc/1
     "message" : "trying out Elasticsearch"
 }
 
-# Index Create Operator
+## 문서 색인으로 생성된 인덱스 매핑 확인하기
+GET twitter/_mappings
+
+## 7.x 버전에서 type 을 _doc 으로 주지 않은 채 PUT Method 로 문서를 색인한다면?
+PUT specifictype/mytype/1
+{
+    "user" : "kimchy",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+
+## mytype 이 아닌 _doc 타입 이름으로도 문서 색인 가능 
+PUT specifictype/_doc/2
+{
+    "user" : "kimchy",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+
+
+## Index Create Operator, 문서 아이디가 존재하면 문서 색인 불가
 PUT twitter/_doc/1?op_type=create
 {
     "user" : "kimchy",
@@ -53,6 +102,7 @@ PUT twitter/_doc/1?op_type=create
     "message" : "trying out Elasticsearch"
 }
 
+## _create API 를 통한 동일 동작
 PUT twitter/_doc/1/_create
 {
     "user" : "kimchy",
@@ -60,7 +110,15 @@ PUT twitter/_doc/1/_create
     "message" : "trying out Elasticsearch"
 }
 
-# Indexing by POST Method
+## create operator 나 API 를 활용하지 않으면 문서 내용이 update 됨
+PUT twitter/_doc/1
+{
+    "user" : "salad",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+
+## POST Method 를 통한 문서 색인하기
 POST twitter/_doc
 {
     "user" : "kimchy",
@@ -68,19 +126,20 @@ POST twitter/_doc
     "message" : "trying out Elasticsearch"
 }
 
-# Getting a document by document id
+## 문서 아이디를 통해 문서 가져오기
 GET twitter/_doc/1
 
-# Getting a document by document id, only source field
+## 문서의 _source field 만 가져오기
+# 7.x
+GET twitter/_source/1
+# 6.x
 GET twitter/_doc/1/_source
 
-# Delete a document by document id 
+## 문서 id 를 통해 문서 삭제하기
 DELETE twitter/_doc/1
 
-# Getting a Cluster Health Info
+## 클러스터 Health 정보 확인하기
 GET _cluster/health
 
-# Getting a Cluster Setting Info
+# 클러스터 Settings 전보 확인하기
 GET _cluster/settings
-
-
