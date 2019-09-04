@@ -64,7 +64,6 @@ function configure_es_yaml
 
     sudo echo "### Discovery Settings" | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
     sudo echo "discovery.seed_hosts: [ \"\",  \"\",  \"\", ]" | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
-    sudo echo "cluster.initial_master_nodes: [ \"\",  \"\",  \"\",  ]" | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
 
     sudo cat ${ES_ADDYML}.${SEQ} | sudo tee -a ${ES_ETC}/${ES_MYML} > /dev/null
 
