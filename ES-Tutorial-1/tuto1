@@ -99,6 +99,32 @@ function start_kb_process
     sudo systemctl restart kibana
 }
 
+function init_ec2
+{
+    # remove rpm files
+    sudo \rm -f /usr/local/src/*
+
+    # stop & disable elasticsearch & kibana daemon
+    sudo systemctl stop elasticsearch
+    sudo systemctl stop kibana
+
+    sudo systemctl disable elasticsearch.service
+    sudo systemctl disable kibana.service
+
+    sudo systemctl daemon-reload
+
+    # erase rpm packages
+    rpm -e elasticsearch-${ES_VER}-1.x86_64
+    rpm -e kibana-${ES_VER}-1.x86_64
+
+    # remove package configs
+    rm -rf /etc/elasticsearch
+    rm -rf /etc/kibana
+    rm -rf /var/lib/elasticsearch
+    rm -rf /var/lib/kibana
+
+}
+
 if [ -z $1 ]; then
         echo "##################### Menu ##############"
         echo " $ ./tuto1 [Command]"
@@ -109,6 +135,7 @@ if [ -z $1 ]; then
         echo "         4 : install kibana packages"
         echo "         5 : configure kibana.yml"
         echo "         6 : start kibana process"
+        echo "         init : ec2 instance initializing"
         echo "#########################################";
         exit 1;
 fi
@@ -120,5 +147,6 @@ case "$1" in
         "4" ) install_kb_packages;;
         "5" ) configure_kb_yaml;;
         "6" ) start_kb_process;;
+        "init" ) init_ec2;;
         *) echo "Incorrect Command" ;;
 esac

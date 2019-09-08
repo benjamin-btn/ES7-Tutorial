@@ -28,6 +28,7 @@ Master Node 1번 장비에서 실습합니다.
          4 : install kibana packages
          5 : configure kibana.yml
          6 : start kibana process
+         init : ec2 instance initializing
 #########################################
 
 ```
@@ -103,6 +104,7 @@ cluster.initial_master_nodes: [ "{IP1}:9300",  ]
          4 : install kibana packages
          5 : configure kibana.yml
          6 : start kibana process
+         init : ec2 instance initializing
 #########################################
 
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-1]$ ./tuto1 4
