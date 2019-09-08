@@ -102,7 +102,7 @@ function start_kb_process
 function init_ec2
 {
     # remove rpm files
-    sudo \rm -f /usr/local/src/*
+    sudo \rm -rf /usr/local/src/*
 
     # stop & disable elasticsearch & kibana daemon
     sudo systemctl stop elasticsearch
@@ -114,14 +114,14 @@ function init_ec2
     sudo systemctl daemon-reload
 
     # erase rpm packages
-    rpm -e elasticsearch-${ES_VER}-1.x86_64
-    rpm -e kibana-${ES_VER}-1.x86_64
+    sudo rpm -e elasticsearch-${ES_VER}-1.x86_64
+    sudo rpm -e kibana-${ES_VER}-1.x86_64
 
     # remove package configs
-    rm -rf /etc/elasticsearch
-    rm -rf /etc/kibana
-    rm -rf /var/lib/elasticsearch
-    rm -rf /var/lib/kibana
+    sudo rm -rf /etc/elasticsearch
+    sudo rm -rf /etc/kibana
+    sudo rm -rf /var/lib/elasticsearch
+    sudo rm -rf /var/lib/kibana
 
 }
 
