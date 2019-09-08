@@ -119,9 +119,11 @@ function init_ec2
 
     # remove package configs
     sudo rm -rf /etc/elasticsearch
-    sudo rm -rf /etc/kibana
     sudo rm -rf /var/lib/elasticsearch
+    sudo rm -rf /var/log/elasticsearch
+    sudo rm -rf /etc/kibana
     sudo rm -rf /var/lib/kibana
+    sudo rm -rf /var/log/kibana
 
 }
 

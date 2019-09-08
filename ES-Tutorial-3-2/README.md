@@ -24,6 +24,7 @@ Data Node 1~3번 장비에서 실습합니다.
          1 : install java & elasticsearch packages
          2 : configure elasticsearch.yml & jvm.options
          3 : start elasticsearch process
+         init : ec2 instance initializing
 #########################################
 
 ```

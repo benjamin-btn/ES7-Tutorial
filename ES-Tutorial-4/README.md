@@ -27,6 +27,7 @@ Warm Data Node 1~3번 장비에서 실습합니다.
          4 : hot/warm template settings
          5 : all indices move to hotdata node
          6 : specific index moves to warmdata node
+         init : ec2 instance initializing
 #########################################
 
 ```
@@ -176,7 +177,7 @@ curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/$1/_sett
   "cluster_name" : "mytuto-es",
   "cluster_uuid" : "LTfRfk3KRLS31kQDROVu9A",
   "version" : {
-    "number" : "7.0.1",
+    "number" : "7.3.0",
     "build_flavor" : "default",
     "build_type" : "rpm",
     "build_hash" : "a9861f4",

@@ -12,11 +12,6 @@ ES_JVM="jvm.options"
 ES_NODEIP=$(ifconfig | grep inet | grep -vE '127.0.0.1|inet6' | awk '{print $2}')
 ES_NODENAME=$(hostname -s)
 
-KB_URL="https://artifacts.elastic.co/downloads/kibana"
-KB_RPM="kibana-${ES_VER}-x86_64.rpm"
-KB_ETC="/etc/kibana"
-KB_MYML="kibana.yml"
-
 SEQ="3rd"
 ORG_SEQ="org_3rd"
 
@@ -86,6 +81,26 @@ function start_es_process
     fi
 }
 
+function init_ec2
+{
+    # remove rpm files
+    sudo \rm -rf /usr/local/src/*
+
+    # stop & disable elasticsearch & kibana daemon
+    sudo systemctl stop elasticsearch
+    sudo systemctl disable elasticsearch.service
+    sudo systemctl daemon-reload
+
+    # erase rpm packages
+    sudo rpm -e elasticsearch-${ES_VER}-1.x86_64
+
+    # remove package configs
+    sudo rm -rf /etc/elasticsearch
+    sudo rm -rf /var/lib/elasticsearch
+    sudo rm -rf /var/log/elasticsearch
+
+}
+
 if [ -z $1 ]; then
         echo "##################### Menu ##############"
         echo " $ ./tuto3-2 [Command]"
@@ -93,6 +108,7 @@ if [ -z $1 ]; then
         echo "         1 : elasticsearch packages"
         echo "         2 : configure elasticsearch.yml & jvm.options"
         echo "         3 : start elasticsearch process"
+        echo "         init : ec2 instance initializing"
         echo "#########################################";
         exit 1;
 fi
@@ -101,5 +117,6 @@ case "$1" in
         "1" ) install_es_packages;;
         "2" ) configure_es_yaml;;
         "3" ) start_es_process;;
+        "init" ) init_ec2;;
         *) echo "Incorrect Command" ;;
 esac
