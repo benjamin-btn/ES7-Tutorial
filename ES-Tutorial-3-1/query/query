@@ -1,3 +1,11 @@
+POST twitter/_doc
+{
+  "settings": {
+    "index.number_of_shards": 6,
+    "index.number_of_replicas": 1
+  }
+}
+
 ## Rolling Restart 
 # Routing Off
 PUT _cluster/settings
