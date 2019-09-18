@@ -11,7 +11,7 @@ POST twitter/_doc
 PUT _cluster/settings
 {
     "transient" : {
-        "cluster.routing.allocation.enable" : “new_primaries”
+        "cluster.routing.allocation.enable" : "new_primaries"
     }
 }
 
