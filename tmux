@@ -1,15 +1,16 @@
 #!/bin/bash
 
 function tmux_key_download() {
-    wget http://ec2-52-221-155-168.ap-southeast-1.compute.amazonaws.com/ES-Key-7th.tar.gz
-    tar xvfz ES-Key-7th.tar.gz
+    sudo yum -y install tmux unzip
+    wget http://ec2-52-221-155-168.ap-southeast-1.compute.amazonaws.com/ES-Key.zip
+    unzip ES-Key.zip
 }
 
 function my_tmux() {
     tmux new-session -d -s mytmux-$(hexdump -n 2 -v -e '/1 "%02X"' /dev/urandom)
     
     HOSTS=$@
-    KEY="ES-Key-7th.pem"
+    KEY="ES-Key-8th.pem"
     
     for i in $HOSTS
     do
