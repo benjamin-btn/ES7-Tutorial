@@ -3,11 +3,9 @@
 PUT text_index1
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "title": {
-          "type": "text"
-        }
+    "properties": {
+      "title": {
+        "type": "text"
       }
     }
   }
@@ -72,11 +70,9 @@ GET text_index1/_search
 PUT keyword_index
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "title": {
-          "type": "keyword"
-        }
+    "properties": {
+      "title": {
+        "type": "keyword"
       }
     }
   }
@@ -111,11 +107,9 @@ GET keyword_index/_search
 PUT date_index
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "date": {
-          "type": "date"
-        }
+    "properties": {
+      "date": {
+        "type": "date"
       }
     }
   }
@@ -160,12 +154,10 @@ POST date_dynamic2/_doc
 PUT date_index_format
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "date": {
-          "type": "date",
-          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
-        }
+    "properties": {
+      "date": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
       }
     }
   }
@@ -184,24 +176,22 @@ POST date_index_format/_doc/
 PUT object_index
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "region": {
-          "type": "keyword"
-        },
-        "manager": {
-          "properties": {
-            "age": {
-              "type": "integer"
-            },
-            "name": {
-              "properties": {
-                "first": {
-                  "type": "keyword"
-                },
-                "last": {
-                  "type": "keyword"
-                }
+    "properties": {
+      "region": {
+        "type": "keyword"
+      },
+      "manager": {
+        "properties": {
+          "age": {
+            "type": "integer"
+          },
+          "name": {
+            "properties": {
+              "first": {
+                "type": "keyword"
+              },
+              "last": {
+                "type": "keyword"
               }
             }
           }
@@ -306,11 +296,9 @@ GET object_index/_search
 PUT nested_index
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "user": {
-          "type": "nested"
-        }
+    "properties": {
+      "user": {
+        "type": "nested"
       }
     }
   }
@@ -390,19 +378,17 @@ GET allfield
 PUT copy_index
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "first_name": {
-          "type": "text",
-          "copy_to": "full_name"
-        },
-        "last_name": {
-          "type": "text",
-          "copy_to": "full_name"
-        },
-        "full_name": {
-          "type": "text"
-        }
+    "properties": {
+      "first_name": {
+        "type": "text",
+        "copy_to": "full_name"
+      },
+      "last_name": {
+        "type": "text",
+        "copy_to": "full_name"
+      },
+      "full_name": {
+        "type": "text"
       }
     }
   }
@@ -487,19 +473,17 @@ PUT refresh/_settings
 PUT myindex
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "first_name": {
-          "type": "text",
-          "copy_to": "full_name"
-        },
-        "last_name": {
-          "type": "text",
-          "copy_to": "full_name"
-        },
-        "full_name": {
-          "type": "text"
-        }
+    "properties": {
+      "first_name": {
+        "type": "text",
+        "copy_to": "full_name"
+      },
+      "last_name": {
+        "type": "text",
+        "copy_to": "full_name"
+      },
+      "full_name": {
+        "type": "text"
       }
     }
   }
@@ -509,11 +493,9 @@ PUT myindex
 PUT nonum
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "account_no": {
-          "type": "keyword"
-        }
+    "properties": {
+      "account_no": {
+        "type": "keyword"
       }
     }
   }
@@ -592,11 +574,9 @@ GET bank/_search
 PUT termquery
 {
   "mappings": {
-    "_doc": {
-      "properties": {
-        "gender": {
-          "type": "keyword"
-        }
+    "properties": {
+      "gender": {
+        "type": "keyword"
       }
     }
   }
