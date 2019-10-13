@@ -1,0 +1,18 @@
+actions:
+  1:
+   action: alias
+   options:
+      name: rollover-read
+   add:
+      filters:
+      - filtertype: pattern
+        kind: prefix
+        value: '^rollover-curator-.*'
+        exclude:
+      - filtertype: age
+        source: creation_date
+        direction: older
+        timestring: '%Y-%m-%d'
+        unit: days
+        unit_count: 0
+        exclude:

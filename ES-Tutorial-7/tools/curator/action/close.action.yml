@@ -1,9 +1,8 @@
 actions:
   1:
-    action: delete_indices
+    action: close
     options:
-      ignore_empty_list: True
-      continue_if_exception: False
+      delete_aliases: False
       disable_action: False
     filters:
     - filtertype: pattern
@@ -15,5 +14,5 @@ actions:
       direction: older
       timestring: '%Y-%m-%d'
       unit: days
-      unit_count: 1
+      unit_count: 2
       exclude:

@@ -1,18 +1,17 @@
 actions:
   1:
-    action: delete_indices
+    action: open
     options:
-      ignore_empty_list: True
-      continue_if_exception: False
       disable_action: False
     filters:
     - filtertype: pattern
       kind: prefix
-      value: '^[a-z].*-'
+      value: '^[a-z].*'
       exclude:
     - filtertype: age
-      source: creation_date
+      source: name
       direction: older
+      timestring: '%Y-%m-%d'
       unit: days
       unit_count: 1
       exclude:

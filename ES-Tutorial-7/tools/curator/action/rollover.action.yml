@@ -2,7 +2,7 @@ actions:
   1:
     action: rollover
     options:
-      name: rollover-index
+      name: rollover-write
       conditions:
         max_age: 1d
         max_docs: 2

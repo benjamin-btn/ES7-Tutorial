@@ -1,5 +1,7 @@
 #!/bin/bash
 
+curl -s -H 'Content-Type: application/json' -XDELETE http://localhost:9200/bank
+
 if [ -z $1 ]; then
     echo "Usage : ./shard localhost"
 else

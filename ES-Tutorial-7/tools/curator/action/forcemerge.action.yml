@@ -6,7 +6,7 @@ actions:
     filters:
     - filtertype: pattern
       kind: prefix
-      value: '^[a-z].*-'
+      value: '^[a-z].*'
       exclude:
     - filtertype: age
       source: name

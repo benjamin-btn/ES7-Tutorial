@@ -1,4 +1,4 @@
 #!/bin/sh
 
-curl -H 'Content-Type: application/x-ndjson' -XPOST $1:9200/bank/account/_bulk?pretty --data-binary @accounts.json
+curl -s -H 'Content-Type: application/x-ndjson' -XPOST $1:9200/bank/account/_bulk?pretty --data-binary @accounts.json
 
