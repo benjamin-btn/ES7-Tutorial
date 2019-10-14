@@ -10,35 +10,6 @@ PUT bank
   }
 }
 
-POST tuto-2019-03-19/_doc
-{
-  "TEST":"TTT"
-}
-
-POST tuto-2019-03-20/_doc
-{
-  "TEST":"TTT"
-}
-
-POST tuto-2019-03-21/_doc
-{
-  "TEST":"TTT"
-}
-
-POST /_aliases
-{
-    "actions": [
-        { "add": { "index": "tuto-2019-03-20", "alias": "alias-today" } }
-    ]
-}
-
-PUT rollover-curator-000001 
-{
-    "aliases": {
-        "rollover-index": {}
-    }
-}
-
 PUT /_all/_settings
 {
   "index.routing.allocation.require.box_type" : "hot"

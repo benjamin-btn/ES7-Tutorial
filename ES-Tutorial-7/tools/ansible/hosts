@@ -5,10 +5,10 @@
 #ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 #[all-node]
 
-[rolling-node:vars]
-ansible_ssh_private_key_file=/home/ec2-user/ES7-Tutorial/ES-Key-8th.pem
-ansible_ssh_common_args='-o StrictHostKeyChecking=no'
-[rolling-node]
-172.31.9.121
-172.31.11.163
-172.31.9.32
+#[rolling-node:vars]
+#ansible_ssh_private_key_file=/home/ec2-user/ES7-Tutorial/ES-Key-8th.pem
+#ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+#[rolling-node]
+#172.31.9.121
+#172.31.11.163
+#172.31.9.32
