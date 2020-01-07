@@ -33,7 +33,7 @@ GET text_index1/_search
 {
   "query": {
     "match": {
-      "title": " Text Field"
+      "title": "Text Field"
     }
   }
 }
@@ -48,20 +48,21 @@ GET text_index2
 
 GET text_index2/_search
 
-GET text_index1/_search
+GET text_index2/_search
 {
   "query": {
     "term": {
-      "title": "Text Field"
+      "title.keyword": "Text Field"
     }
   }
 }
 
-GET text_index1/_search
+
+GET text_index2/_search
 {
   "query": {
     "match": {
-      "title": " Text Field"
+      "title": "Text Field"
     }
   }
 }
@@ -98,10 +99,27 @@ GET keyword_index/_search
 {
   "query": {
     "match": {
-      "title": " Keyword Field"
+      "title": "Keyword Field"
     }
   }
 }
+
+GET keyword_index/_search
+{
+  "query": {
+    "match": {
+      "title": "Keyword"
+    }
+  }
+}
+
+POST keyword_index/_analyze
+{
+  "text": "Keyword Field"
+}
+
+GET keyword_index/_mapping
+
 
 # Date Field
 PUT date_index
@@ -140,7 +158,7 @@ POST date_dynamic1/_doc
 GET date_dynamic1
 
 POST date_dynamic1/_doc
-{ "date": 1420070400001 } 
+{ "date": 1420070400001 }
 
 POST date_dynamic2/_doc
 { "date": 1420070400001 } 
@@ -204,7 +222,7 @@ PUT object_index
 GET object_index
 
 # Mapping에 Field 추가하기
-PUT object_index/_mapping/_doc
+PUT object_index/_mapping
 {
   "properties": {
     "region": {
@@ -232,6 +250,8 @@ PUT object_index/_mapping/_doc
     }
   }
 }
+# 7버전 변경사항
+
 
 GET object_index
 
@@ -253,10 +273,7 @@ PUT object_index/_mapping/_doc
               "type": "keyword"
             },
             "last": {
-              "type": "keyword"
-            },
-            "full": {
-              "type": "keyword"
+              "type": "text"
             }
           }
         }
@@ -272,8 +289,7 @@ POST object_index/_doc
     "age": 30,
     "name": {
       "first": "John",
-      "last": "Smith",
-      "full": "Smith John"
+      "last": "Smith"
     }
   }
 }
