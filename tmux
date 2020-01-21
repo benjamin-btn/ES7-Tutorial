@@ -10,7 +10,7 @@ function my_tmux() {
     tmux new-session -d -s mytmux-$(hexdump -n 2 -v -e '/1 "%02X"' /dev/urandom)
     
     HOSTS=$@
-    KEY="ES-Key-8th.pem"
+    KEY="ES-Key.pem"
     
     for i in $HOSTS
     do
