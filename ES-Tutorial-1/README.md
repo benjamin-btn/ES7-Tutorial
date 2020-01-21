@@ -164,3 +164,30 @@ path.logs: /var/log/elasticsearch 로 설정되어 cluster.name 이 적용된 �
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-1]$ sudo vi /var/log/elasticsearch/mytuto-es.log
 ```
   
+로그도 남지 않았으면 elasticsearch user 로 elasticsearch binary 파일을 직접 실행해 로그를 살펴봅시다
+
+```bash
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-1]$ sudo -u elasticsearch /usr/share/elasticsearch/bin/elasticsearch
+OpenJDK 64-Bit Server VM warning: Option UseConcMarkSweepGC was deprecated in version 9.0 and will likely be removed in a future release.
+[2020-01-21T16:22:17,706][INFO ][o.e.e.NodeEnvironment    ] [master-ip-172-31-5-69] using [1] data paths, mounts [[/ (rootfs)]], net usable_space [6gb], net total_space [9.9gb], types [rootfs]
+[2020-01-21T16:22:17,708][INFO ][o.e.e.NodeEnvironment    ] [master-ip-172-31-5-69] heap size [1.9gb], compressed ordinary object pointers [true]
+[2020-01-21T16:22:17,740][WARN ][o.e.b.ElasticsearchUncaughtExceptionHandler] [master-ip-172-31-5-69] uncaught exception in thread [main]
+org.elasticsearch.bootstrap.StartupException: java.lang.IllegalStateException: Node is started with node.data=false, but has shard data: [/var/lib/elasticsearch/nodes/0/indices/se6EbqfOQieAKo_CoASbOg/0, /var/lib/elasticsearch/nodes/0/indices/MFk046FfS0CWeXWJscO-MQ/0]. Use 'elasticsearch-node repurpose' tool to clean up
+	at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:163) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Elasticsearch.execute(Elasticsearch.java:150) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.cli.EnvironmentAwareCommand.execute(EnvironmentAwareCommand.java:86) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.cli.Command.mainWithoutErrorHandling(Command.java:125) ~[elasticsearch-cli-7.5.1.jar:7.5.1]
+	at org.elasticsearch.cli.Command.main(Command.java:90) ~[elasticsearch-cli-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:115) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:92) ~[elasticsearch-7.5.1.jar:7.5.1]
+Caused by: java.lang.IllegalStateException: Node is started with node.data=false, but has shard data: [/var/lib/elasticsearch/nodes/0/indices/se6EbqfOQieAKo_CoASbOg/0, /var/lib/elasticsearch/nodes/0/indices/MFk046FfS0CWeXWJscO-MQ/0]. Use 'elasticsearch-node repurpose' tool to clean up
+	at org.elasticsearch.env.NodeEnvironment.ensureNoShardData(NodeEnvironment.java:1081) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.env.NodeEnvironment.<init>(NodeEnvironment.java:325) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.node.Node.<init>(Node.java:273) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.node.Node.<init>(Node.java:253) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Bootstrap$5.<init>(Bootstrap.java:221) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Bootstrap.setup(Bootstrap.java:221) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Bootstrap.init(Bootstrap.java:349) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:159) ~[elasticsearch-7.5.1.jar:7.5.1]
+	... 6 more
+```

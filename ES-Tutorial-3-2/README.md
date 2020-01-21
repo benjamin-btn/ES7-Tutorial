@@ -67,7 +67,7 @@ transport.tcp.port: 9300
 4) **node.master: false, node.data:true 로 role 추가 설정**
 5) discovery.zen.minimum_master_nodes 기존장비와 동일 설정
 6) **~discovery.zen.ping.unicast.hosts~ discovery.seed_hosts 는 직접 수정 필요, 기존에 설정한 마스터 노드 3대만 설정(데이터노드 아이피 설정 금지)**
-7) **./tuto3-2 ./tuto3-2 2 실행 후 ~discovery.zen.ping.unicast.hosts~ discovery.seed_hosts 에 기존 장비와 추가했던 노드 3대의 ip:9300 설정 필요**
+7) **./tuto3-2 1,  ./tuto3-2 2 실행 후 ~discovery.zen.ping.unicast.hosts~ discovery.seed_hosts 에 기존 장비와 추가했던 노드 3대의 ip:9300 설정 필요**
 
 ```bash
 ### ES Node Role Settings
@@ -104,7 +104,7 @@ discovery.seed_hosts: [ "{IP1}:9300",  "{IP3}:9300",  "{IP3}:9300", ]
 
 **주의할 점은 마스터 노드를 재시작 할 때 반드시 클러스터가 그린이 된 이후 다음 마스터 노드를 재시작**
 
-**7.x 버전부터는 마스터노드에 샤드에 데이터가 잔존해있으면 프로세스가 올라오지 않는다.
+**7.x 버전부터는 노드의 역할이 변경되면 프로세스가 올라오지 않는다.
 /usr/share/elasticsearch/bin/elasticsearch-node repurpose 명령으로 샤드 내에 데이터를 clean up 해준 뒤 재시작해야한다**
 
 
@@ -161,4 +161,31 @@ path.logs: /var/log/elasticsearch 로 설정되어 cluster.name 이 적용된 �
 ```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-3-2]$ sudo vi /var/log/elasticsearch/mytuto-es.log
 ```
+  
+로그도 남지 않았으면 elasticsearch user 로 elasticsearch binary 파일을 직접 실행해 로그를 살펴봅시다
 
+```bash
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-1]$ sudo -u elasticsearch /usr/share/elasticsearch/bin/elasticsearch
+OpenJDK 64-Bit Server VM warning: Option UseConcMarkSweepGC was deprecated in version 9.0 and will likely be removed in a future release.
+[2020-01-21T16:22:17,706][INFO ][o.e.e.NodeEnvironment    ] [master-ip-172-31-5-69] using [1] data paths, mounts [[/ (rootfs)]], net usable_space [6gb], net total_space [9.9gb], types [rootfs]
+[2020-01-21T16:22:17,708][INFO ][o.e.e.NodeEnvironment    ] [master-ip-172-31-5-69] heap size [1.9gb], compressed ordinary object pointers [true]
+[2020-01-21T16:22:17,740][WARN ][o.e.b.ElasticsearchUncaughtExceptionHandler] [master-ip-172-31-5-69] uncaught exception in thread [main]
+org.elasticsearch.bootstrap.StartupException: java.lang.IllegalStateException: Node is started with node.data=false, but has shard data: [/var/lib/elasticsearch/nodes/0/indices/se6EbqfOQieAKo_CoASbOg/0, /var/lib/elasticsearch/nodes/0/indices/MFk046FfS0CWeXWJscO-MQ/0]. Use 'elasticsearch-node repurpose' tool to clean up
+	at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:163) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Elasticsearch.execute(Elasticsearch.java:150) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.cli.EnvironmentAwareCommand.execute(EnvironmentAwareCommand.java:86) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.cli.Command.mainWithoutErrorHandling(Command.java:125) ~[elasticsearch-cli-7.5.1.jar:7.5.1]
+	at org.elasticsearch.cli.Command.main(Command.java:90) ~[elasticsearch-cli-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:115) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Elasticsearch.main(Elasticsearch.java:92) ~[elasticsearch-7.5.1.jar:7.5.1]
+Caused by: java.lang.IllegalStateException: Node is started with node.data=false, but has shard data: [/var/lib/elasticsearch/nodes/0/indices/se6EbqfOQieAKo_CoASbOg/0, /var/lib/elasticsearch/nodes/0/indices/MFk046FfS0CWeXWJscO-MQ/0]. Use 'elasticsearch-node repurpose' tool to clean up
+	at org.elasticsearch.env.NodeEnvironment.ensureNoShardData(NodeEnvironment.java:1081) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.env.NodeEnvironment.<init>(NodeEnvironment.java:325) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.node.Node.<init>(Node.java:273) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.node.Node.<init>(Node.java:253) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Bootstrap$5.<init>(Bootstrap.java:221) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Bootstrap.setup(Bootstrap.java:221) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Bootstrap.init(Bootstrap.java:349) ~[elasticsearch-7.5.1.jar:7.5.1]
+	at org.elasticsearch.bootstrap.Elasticsearch.init(Elasticsearch.java:159) ~[elasticsearch-7.5.1.jar:7.5.1]
+	... 6 more
+```
