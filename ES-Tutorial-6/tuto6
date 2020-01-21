@@ -17,7 +17,7 @@ function install_if_packages
 
     ls -alh /usr/local/src/influxdb* &> /dev/null
     if [ $? -ne 0 ]; then
-        sudo wget -q ${INFLUXDB_URL}/${INFLUXDB_RPM} -O /usr/local/src/${INFLUXDB_RPM}
+        sudo wget ${INFLUXDB_URL}/${INFLUXDB_RPM} -O /usr/local/src/${INFLUXDB_RPM}
     fi
 
     rpm -ql influxdb > /dev/null
@@ -52,7 +52,7 @@ function install_gf_packages
 
     ls -alh /usr/local/src/grafana* 2> /dev/null
     if [ $? -ne 0 ]; then
-        sudo wget -q ${GRAFANA_URL}/${GRAFANA_RPM} -O /usr/local/src/${GRAFANA_RPM}
+        sudo wget ${GRAFANA_URL}/${GRAFANA_RPM} -O /usr/local/src/${GRAFANA_RPM}
     fi
 
     rpm -ql grafana > /dev/null

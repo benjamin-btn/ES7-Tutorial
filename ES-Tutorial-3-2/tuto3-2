@@ -27,7 +27,7 @@ function install_es_packages
 
     ls -alh /usr/local/src/elasticsearch* 2> /dev/null
     if [ $? -ne 0 ]; then
-        sudo wget -q ${ES_URL}/${ES_RPM} -O /usr/local/src/${ES_RPM}
+        sudo wget ${ES_URL}/${ES_RPM} -O /usr/local/src/${ES_RPM}
     fi
 
     rpm -ql elasticsearch > /dev/null

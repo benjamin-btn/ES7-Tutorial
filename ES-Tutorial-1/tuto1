@@ -32,7 +32,7 @@ function install_es_packages
 
     ls -alh /usr/local/src/elasticsearch* 2> /dev/null
     if [ $? -ne 0 ]; then
-        sudo wget -q ${ES_URL}/${ES_RPM} -O /usr/local/src/${ES_RPM}
+        sudo wget ${ES_URL}/${ES_RPM} -O /usr/local/src/${ES_RPM}
     fi
 
     rpm -ql elasticsearch > /dev/null
@@ -75,7 +75,7 @@ function install_kb_packages
 {
     ls -alh /usr/local/src/kibana* 2> /dev/null
     if [ $? -ne 0 ]; then
-        sudo wget -q ${KB_URL}/${KB_RPM} -O /usr/local/src/${KB_RPM}
+        sudo wget ${KB_URL}/${KB_RPM} -O /usr/local/src/${KB_RPM}
     fi
 
     rpm -ql kibana > /dev/null
