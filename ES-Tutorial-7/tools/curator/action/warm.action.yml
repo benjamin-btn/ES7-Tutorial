@@ -3,7 +3,7 @@ actions:
     action: allocation
     options:
       key: box_type
-      value: warm
+      value: warmdata
       allocation_type: require
     filters:
     - filtertype: pattern

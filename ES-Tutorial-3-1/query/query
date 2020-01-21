@@ -1,4 +1,13 @@
-POST twitter/_doc
+PUT _all/_settings
+{
+  "settings": {
+    "index.unassigned.node_left.delayed_timeout": "5s"
+  }
+}
+
+DELETE twitter
+
+PUT twitter
 {
   "settings": {
     "index.number_of_shards": 6,
@@ -10,10 +19,12 @@ POST twitter/_doc
 # Routing Off
 PUT _cluster/settings
 {
-    "transient" : {
-        "cluster.routing.allocation.enable" : "new_primaries"
-    }
+  "transient" : {
+    "cluster.routing.allocation.enable" : "new_primaries"
+  }
 }
+
+GET _cluster/settings?flat_settings
 
 # [ec2-user@ip-xxx-xxx-xxx-xxx ~]$ sudo systemctl stop elasticsearch
 # [ec2-user@ip-xxx-xxx-xxx-xxx ~]$ sudo systemctl start elasticsearch
@@ -21,163 +32,217 @@ PUT _cluster/settings
 # Routing On
 PUT _cluster/settings
 {
-    "transient" : {
-        "cluster.routing.allocation.enable" : null
-    }
+  "transient" : {
+    "cluster.routing.allocation.enable" : null
+  }
 }
+
+GET _cluster/settings?flat_settings
 
 ## Shard Reroute 
 POST _cluster/reroute 
 {
-    "commands" : [ {
-        "move" : {
-            "index" : "twitter",
-            "shard" : 0,
-            "from_node" : "G2Re8Ad",
-            "to_node" : "ryIblhS"
-       }
-    } ]
+  "commands" : [ 
+    {
+      "move" : {
+        "index" : "twitter",
+        "shard" : 0,
+        "from_node" : "data-ip-172-31-11-201",
+        "to_node" : "data-ip-172-31-3-240"
+     }
+    } 
+  ]
 }
 
 ## Shard Allocation by Watermark 
 # Disk Threshold Enable & Watermark Setting
 PUT _cluster/settings
 {
-    "transient":
-    {
-        "cluster.routing.allocation.disk.threshold_enabled": "true",
-        "cluster.routing.allocation.disk.watermark.low": "85%",
-        "cluster.routing.allocation.disk.watermark.high": "90%"
-    }
+  "transient": {
+    "cluster.routing.allocation.disk.threshold_enabled": "true",
+    "cluster.routing.allocation.disk.watermark.low": "85%",
+    "cluster.routing.allocation.disk.watermark.high": "90%",
+    "cluster.routing.allocation.disk.watermark.flood_stage": "95%"
+  }
 }
 
-# Flood Stage Setting
-PUT _cluster/settings
-{
-    "transient": 
-    { 
-        "cluster.routing.allocation.disk.threshold_enabled": "true",  
-        "cluster.routing.allocation.disk.watermark.flood_stage": "95%"
-    }
-}
+GET _cluster/settings?flat_settings
 
 # Read only off
 PUT twitter/_settings
 {
-    "index.blocks.read_only_allow_delete": null
+  "index.blocks.read_only_allow_delete": null
 }
 
 ## Dynamic Index Setting 
 # Number Of Replicas
 PUT twitter/_settings
 {
-    "index" : {
-        "number_of_replicas" : 2
-    }
+  "index.number_of_replicas" : 2
 }
+
+GET twitter/_settings?flat_settings
 
 # Refresh Interval
 PUT twitter/_settings
 {
-    "index" : {
-        "refresh_interval" : "2s"
-    }
+  "index.refresh_interval" : "2s"
 }
 
-GET twitter/_settings
+GET twitter/_settings?flat_settings
 
 # Routing Allocation
 PUT twitter/_settings
 {
-    "index" : {
-        "routing.allocation.enable" : null
-    }
+  "index.routing.allocation.enable" : null
 }
+
+GET twitter/_settings?flat_settings
+
 
 # Routing Rebalance
 PUT twitter/_settings
 {
-    "index" : {
-        "routing.rebalance.enable" : null
-    }
+  "index.routing.rebalance.enable" : null
 }
 
 # Index Dynamic Mapping 
 PUT data/_doc/1 
 { "count": 5 }
 
-GET data
+GET data/_mapping
+
+PUT strdata/_doc/1
+{ "stringdata": "strdata" }
+
+GET strdata/_mapping
 
 # Index Template 
 PUT _template/mytemplate
 {
-    "index_patterns": ["te*", "bar*"],
-    "order" : 0,
-    "settings": {
-        "number_of_shards": 1
-    }
+  "index_patterns": ["te*", "bar*"],
+  "order" : 0,
+  "settings": {
+    "number_of_shards": 2
+  }
 }
 
-GET _template/mytemplate
+GET _template/mytemplate?flat_settings
+
+POST test_template/_doc
+{
+  "test": "template"
+}
+
+PUT _template/mytemplate_order1
+{
+  "index_patterns": ["test*"],
+  "order" : 1,
+  "settings": {
+    "number_of_shards": 3,
+    "number_of_replicas": 2
+  }
+}
+
+GET _template/mytemplate_order1?flat_settings
+
+POST test_template_order1/_doc
+{
+  "test": "template"
+}
+
+PUT _template/mytemplate_order2
+{
+  "index_patterns": ["test_template*"],
+  "order" : 2,
+  "settings": {
+    "number_of_shards": 4
+  }
+}
+
+GET _template/mytemplate_order2?flat_settings
+
+POST test_template_order2/_doc
+{
+  "test": "template"
+}
+
+GET _cat/templates?v&s=name
+DELETE _template/mytemplate
+DELETE _template/mytemplate_order1
+DELETE _template/mytemplate_order2
+GET _cat/templates?v&s=name
 
 # Hot / Warm Data 
 PUT _template/mytemplate
 {
-    "index_patterns": ["*"],
-    "order" : 0,
-    "settings": {
-        "number_of_shards": 1,
-        "index.routing.allocation.require.box_type" : "hot"
-    }
+  "index_patterns": ["*"],
+  "order" : 0,
+  "settings": {
+    "number_of_shards": 3,
+    "index.routing.allocation.require.box_type" : "hotdata"
+  }
 }
+
+GET _template/mytemplate?flat_settings
 
 PUT test/_settings
 {
-        "index.routing.allocation.require.box_type" : "warm"
+  "index.routing.allocation.require.box_type" : "warmdata"
 }
 
 ## Cluster API
 # transient, persistent 설정해보기 
 
-PUT /_cluster/settings
+GET _cluster/settings?flat_settings
+
+PUT /_cluster/settings?flat_settings
 {
-    "persistent" : {
-        "discovery.zen.minimum_master_nodes" : 1
-    },
-    "transient" : {
-        "cluster.routing.allocation.enable" : "none"
-    }
+  "persistent" : {
+    "discovery.zen.minimum_master_nodes" : 1
+  },
+  "transient" : {
+    "cluster.routing.allocation.enable" : "none"
+  }
 }
+
+GET _cluster/settings?flat_settings
 
 # _cluster API 로 클러스터 라우팅 할당 모드를 변경 
 
-PUT _cluster/settings
+PUT _cluster/settings?flat_settings
 {
-    "transient" : {
-        "cluster.routing.allocation.enable" : "none"
-    }
+  "transient" : {
+    "cluster.routing.allocation.enable" : "none"
+  }
 }
+
+GET _cluster/settings?flat_settings
 
 # _cluster API 로 운영중인 특정 노드의 샤드 제외 
 
-PUT _cluster/settings
+PUT _cluster/settings?flat_settings
 {
-    "transient" : {
-        "cluster.routing.allocation.exclude._ip" : "1.1.1.1, 2.2.2.2, 3.3.3.*"
-    }
+  "transient" : {
+    "cluster.routing.allocation.exclude._ip" : "1.1.1.1, 2.2.2.2, 3.3.3.*"
+  }
 }
+
+GET _cluster/settings?flat_settings
 
 # POST _cluster/reroute 를 이용한 unassigned 샤드 강제 분배 
 
 POST _cluster/reroute
 {
-    "commands" : [ {
-        "allocate_replica" : {
-             "index" : "twitter",
-             "shard" : 0,
-             "node" : "ryIblhS"
-       }
-    } ]
+  "commands" : [ 
+    {
+      "allocate_replica" : {
+        "index" : "twitter",
+        "shard" : 0,
+        "node" : "data-ip-172-31-0-80"
+      }
+    } 
+  ]
 }
 
 # POST _cluster/reroute 를 이용한 샤드 할당에 실패한 샤드 강제 분배 
@@ -190,46 +255,49 @@ POST _cluster/allocation/explain
 
 # _all 이나 wildcard 를 대상으로 삭제작업 방지 
 
-PUT _cluster/settings
+PUT _cluster/settings?flat_settings
 {
   "transient": {
-      "action.destructive_requires_name": true
+    "action.destructive_requires_name": true
   } 
 }
+
+GET _cluster/settings?flat_settings
 
 # POST _reindex 를 이용한 재색인 
 
 POST _reindex
 {
-    "source": {
-        "index": "twitter"
-    },
-    "dest": {
-        "index": "new_twitter"
-    }
+  "source": {
+    "index": "twitter"
+  },
+  "dest": {
+    "index": "new_twitter"
+  }
 }
 
 # 외부 클러스터에서 reindex 가능 
 
-$ sudo vi /etc/elasticsearch/elasticsearch.yml
+# sudo vi /etc/elasticsearch/elasticsearch.yml
 # 아래 내용 추가하려 해당 whitelist 로 부터 인덱스를 재색인 할 수 있도록 설정
-reindex.remote.whitelist: "{SRC_Cluster_URL}:9200"
+# reindex.remote.whitelist: "{SRC_Cluster_URL}:9200"
 
-$ curl -XPOST -H 'Content-Type: application/json' http://{my_cluster_url}/_reindex
-{
-    "source": {
-        "remote": {
-            "host": "http://{SRC_Cluster_URL}:9200",
-        },
-        "index": "twitter"
-    },
-    "dest": {
-        "index": "re_twitter"
-    }
-}
+# curl -XPOST -H 'Content-Type: application/json' http://{my_cluster_url}/_reindex
+#{
+#    "source": {
+#        "remote": {
+#            "host": "http://{SRC_Cluster_URL}:9200",
+#        },
+#        "index": "twitter"
+#    },
+#    "dest": {
+#        "index": "re_twitter"
+#    }
+#}
 
 # bulk API 
 
+DELETE test
 POST _bulk
 { "index" : { "_index" : "test", "_type" : "_doc", "_id" : "1" } }
 { "field1" : "value1" }
@@ -239,46 +307,62 @@ POST _bulk
 { "update" : {"_id" : "1", "_type" : "_doc", "_index" : "test"} }
 { "doc" : {"field2" : "value2"} }
 
+GET test/_search
+
 # json 문서로 bulking 하기 
 
-$ curl -s -H "Content-Type: application/x-ndjson" -XPOST localhost:9200/_bulk --data-binary “@accounts.json"
+# curl -s -H "Content-Type: application/x-ndjson" -XPOST localhost:9200/_bulk --data-binary “@accounts.json"
 
-$ curl -s -H "Content-Type: application/x-ndjson" -XPOST localhost:9200/_bulk --data-binary "@shakespeare_6.0.json"
+# curl -s -H "Content-Type: application/x-ndjson" -XPOST localhost:9200/_bulk --data-binary "@shakespeare_6.0.json"
 
 # aliases API 
 
-# 생성
+# test index 생성
+POST test1/_doc 
+{ "name": "test1" }
+
+POST test2/_doc 
+{ "name": "test1" }
+
+POST test3/_doc 
+{ "name": "test1" }
+
 POST /_aliases
 {
-    "actions": [
-        { "add": { "index": "test1", "alias": "alias1" } }
-    ]
+  "actions": [
+    { "add": { "index": "test1", "alias": "alias1" } }
+  ]
 }
+
+POST test1/_aliases/alias_direct
 
 # 삭제
 POST /_aliases
 {
-    "actions": [
-        { "remove": { "index": "test1", "alias": "alias1" } }
-    ]
+  "actions": [
+    { "remove": { "index": "test1", "alias": "alias1" } }
+  ]
 }
+
+DELETE test1/_aliases/alias_direct
+
 
 # 여러 인덱스에 앨리어싱 
 
 POST /_aliases
 {
-    "actions": [
-        { "add": { "indices": ["test1", "test2"], "alias": "alias2" } }
-    ]
+  "actions": [
+    { "add": { "indices": ["test1", "test2"], "alias": "alias2" } }
+  ]
 }
 
 # 와일드카드 이용
 
 POST /_aliases
 {
-    "actions": [
-        { "add": { "index": "test*", "alias": "alias3" } }
-    ]
+  "actions": [
+    { "add": { "index": "test*", "alias": "alias3" } }
+  ]
 }
 
 # 세그먼트 병합하기 

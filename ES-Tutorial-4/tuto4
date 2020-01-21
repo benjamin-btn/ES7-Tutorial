@@ -92,7 +92,7 @@ function configure_es_template
             "index_patterns": ["*"],
             "order" : 0,
             "settings": {
-                "index.routing.allocation.require.box_type" : "hot"
+                "index.routing.allocation.require.box_type" : "hotdata"
             }
         }'
     fi
@@ -107,7 +107,7 @@ function configure_es_hotmove
     else
         curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/_all/_settings -d '
         {
-            "index.routing.allocation.require.box_type" : "hot"
+            "index.routing.allocation.require.box_type" : "hotdata"
         }'
     fi
 }
@@ -123,7 +123,7 @@ function configure_es_warmmove
         else
     	    curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/$1/_settings -d '
             {
-                "index.routing.allocation.require.box_type" : "warm"
+                "index.routing.allocation.require.box_type" : "warmdata"
             }'
         fi
     fi
@@ -140,7 +140,7 @@ function init_ec2
     # shard reloacate to hot data node
     curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/_all/_settings -d '
     {
-        "index.routing.allocation.require.box_type" : "hot"
+        "index.routing.allocation.require.box_type" : "hotdata"
     }'
     sleep 30
 
@@ -167,7 +167,7 @@ if [ -z $1 ]; then
         echo "         1 : elasticsearch packages"
         echo "         2 : configure elasticsearch.yml & jvm.options"
         echo "         3 : start elasticsearch process"
-        echo "         4 : hot/warm template settings"
+        echo "         4 : hotdata/warmdata template settings"
         echo "         5 : all indices move to hotdata node"
         echo "         6 : specific index moves to warmdata node"
         echo "         init : ec2 instance initializing"

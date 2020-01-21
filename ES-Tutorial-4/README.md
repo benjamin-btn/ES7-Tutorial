@@ -24,7 +24,7 @@ Warm Data Node 1~3번 장비에서 실습합니다.
          1 : install java & elasticsearch packages
          2 : configure elasticsearch.yml & jvm.options
          3 : start elasticsearch process
-         4 : hot/warm template settings
+         4 : hotdata/warmdata template settings
          5 : all indices move to hotdata node
          6 : specific index moves to warmdata node
          init : ec2 instance initializing
@@ -85,11 +85,11 @@ cluster.initial_master_nodes: [ "{IP1}:9300",  "{IP3}:9300",  "{IP3}:9300", ]
 
 ```
 
-8) **warm data node 임을 클러스터에서 인식할 수 있도록 node.attr.box_type: warm 추가 설정**
+8) **warm data node 임을 클러스터에서 인식할 수 있도록 node.attr.box_type: warmdata 추가 설정**
 
 ```bash
 ### Hot / Warm Data Node Settings
-node.attr.box_type: warm
+node.attr.box_type: warmdata
 
 ```
 
@@ -112,13 +112,13 @@ node.attr.box_type: warm
 
 ```
 
-11) **클러스터에 warm data node 3대가 정상적으로 추가되면 기존 데이터노드 3대에 node.attr.box_type: hot 설정 후 한 대씩 프로세스 재시작, 클러스터에서 hot data node 임을 인식할 수 있도록 추가설정**
+11) **클러스터에 warm data node 3대가 정상적으로 추가되면 기존 데이터노드 3대에 node.attr.box_type: hotdata 설정 후 한 대씩 프로세스 재시작, 클러스터에서 hot data node 임을 인식할 수 있도록 추가설정**
 
 ```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-4-1]$ sudo vi /etc/elasticsearch/elasticsearch.yml
 
 ### Hot / Warm Data Node Settings
-node.attr.box_type: hot
+node.attr.box_type: hotdata
 
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-4-1]$ systemctl restart elasticsearch.service
 
@@ -134,20 +134,20 @@ curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/_templat
     "index_patterns": ["*"],
     "order" : 0,
     "settings": {
-        "index.routing.allocation.require.box_type" : "hot"
+        "index.routing.allocation.require.box_type" : "hotdata"
     }
 }'
 
 ```
 
-13) 클러스터 내 모든 인덱스에 hot box_type 으로 설정
+13) 클러스터 내 모든 인덱스에 hotdata box_type 으로 설정
 
 ```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-4]$ ./tuto4 5
 
 curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/_all/_settings -d '
 {
-    "index.routing.allocation.require.box_type" : "hot"
+    "index.routing.allocation.require.box_type" : "hotdata"
 }'
 
 ```
@@ -159,7 +159,7 @@ curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/_all/_se
 
 curl -s -H 'Content-Type: application/json' -XPUT http://localhost:9200/$1/_settings -d '
 {
-    "index.routing.allocation.require.box_type" : "warm"
+    "index.routing.allocation.require.box_type" : "warmdata"
 }'
 
 ```
