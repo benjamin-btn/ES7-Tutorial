@@ -56,7 +56,7 @@ POST _cluster/reroute
 
 ## Shard Allocation by Watermark 
 # Disk Threshold Enable & Watermark Setting
-PUT _cluster/settings
+PUT _cluster/settings?flat_settings
 {
   "transient": {
     "cluster.routing.allocation.disk.threshold_enabled": "true",
