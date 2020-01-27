@@ -1,0 +1,14 @@
+[Unit]
+Description=ES Head
+After=network-online.target
+
+[Service]
+User=ec2-user
+Group=ec2-user
+WorkingDirectory=/usr/local/elasticsearch-head/
+ExecStart=/usr/bin/npm run start
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=es-head.service

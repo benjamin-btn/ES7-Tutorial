@@ -1,0 +1,14 @@
+[Unit]
+Description=ES HQ
+After=network-online.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/usr/local/elasticsearch-HQ/
+ExecStart=/usr/bin/python3.4 /usr/local/elasticsearch-HQ/application.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=es-hq.service
