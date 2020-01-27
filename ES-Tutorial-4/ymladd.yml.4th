@@ -8,5 +8,5 @@ node.master: false
 node.data: true
 
 ### Hot / Warm Data Node Settings
-node.attr.box_type: warm
+node.attr.box_type: warmdata
 
