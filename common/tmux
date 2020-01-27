@@ -1,39 +1,54 @@
 #!/bin/bash
 
-function tmux_key_download() {
-    sudo yum -y install tmux unzip
-    wget http://ec2-52-221-155-168.ap-southeast-1.compute.amazonaws.com/ES-Key.zip
-    unzip ES-Key.zip
-}
+##function tmux_key_download() {
+##    sudo yum -y install tmux unzip
+##    wget http://ec2-52-221-155-168.ap-southeast-1.compute.amazonaws.com/ES-Key.zip
+##    unzip ES-Key.zip
+##}
 
 function my_tmux() {
-    tmux new-session -d -s mytmux-$(hexdump -n 2 -v -e '/1 "%02X"' /dev/urandom)
-    
-    HOSTS=$@
     KEY="ES-Key.pem"
-    
-    for i in $HOSTS
-    do
-            tmux split-window -h "ssh -i $KEY -l ec2-user -o StrictHostKeyChecking=no $i"
-            tmux select-layout tiled > /dev/null
+
+    HOSTS=$@
+    local user="ec2-user"
+    local hosts=( $HOSTS )
+    local name="sshs-$(hexdump -n 2 -v -e '/1 "%02X"' /dev/urandom)"
+
+    tmux new-session -d -s $name
+    tmux new-window -t $name:1 "ssh -i ES-Key.pem -l $user -o StrictHostKeyChecking=no ${hosts[0]}"
+    unset hosts[0]i;
+    for i in "${hosts[@]}"; do
+        tmux split-window -h  "ssh -i ES-Key.pem -l $user -o StrictHostKeyChecking=no $i"
+        tmux select-layout tiled > /dev/null
     done
-    
     tmux select-pane -t 0
     tmux set-window-option synchronize-panes on > /dev/null
+
+    tmux kill-window -t 0
+    tmux attach -t $name
+    
 }
 
+
 if [ -z $1 ]; then
-        echo "##################### Menu ##############"
-        echo " $ ./tmux [Command]"
-        echo "#####################%%%%%%##############"
-        echo "         1 : download a pem key"
-        echo "         2 : connect multi ssh sessions"
-        echo "#########################################";
-        exit 1;
+    echo "Usage : ./tmux ip1 ip2 ip3 ..."
+    exit 1;
 fi
 
-case "$1" in
-        "1" ) tmux_key_download;;
-        "2" ) my_tmux $@;;
-        *) echo "Incorrect Command" ;;
-esac
+my_tmux $@
+
+##if [ -z $1 ]; then
+##        echo "##################### Menu ##############"
+##        echo " $ ./tmux [Command]"
+##        echo "#####################%%%%%%##############"
+##        echo "         1 : download a pem key"
+##        echo "         2 : connect multi ssh sessions"
+##        echo "#########################################";
+##        exit 1;
+##fi
+##
+##case "$1" in
+##        "1" ) tmux_key_download;;
+##        "2" ) my_tmux $@;;
+##        *) echo "Incorrect Command" ;;
+##esac
