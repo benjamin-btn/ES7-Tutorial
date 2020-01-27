@@ -25,10 +25,10 @@ function install_head
 # Start Head Plugin
 function start_head
 {
-    cp es-head.service /usr/lib/systemd/system/es-head.service
-    systemctl daemon-reload
-    systemctl enable es-head.service
-    systemctl start es-head.service
+    sudo cp es-head.service /usr/lib/systemd/system/es-head.service
+    sudo systemctl daemon-reload
+    sudo systemctl enable es-head.service
+   sudo systemctl start es-head.service
 }
 
 # Elasticsearch HQ Plugin Install
@@ -54,10 +54,10 @@ function install_hq
 # Start Head Plugin
 function start_hq
 {
-    cp es-hq.service /usr/lib/systemd/system/es-hq.service
-    systemctl daemon-reload
-    systemctl enable es-hq.service
-    systemctl start es-hq.service
+    sudo cp es-hq.service /usr/lib/systemd/system/es-hq.service
+    sudo systemctl daemon-reload
+    sudo systemctl enable es-hq.service
+    sudo systemctl start es-hq.service
 }
 
 
