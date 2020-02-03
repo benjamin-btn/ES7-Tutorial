@@ -1,0 +1,643 @@
+## Analysis
+# 애널라이저 확인
+
+# standard
+POST _analyze
+{
+  "text": "Winter is Coming!!!"
+}
+
+POST _analyze
+{
+  "tokenizer": "standard",
+  "filter": [
+    "lowercase",
+    "asciifolding"
+  ],
+  "text": "Is this déja vu?"
+}
+
+# whitespace
+POST _analyze
+{
+  "analyzer": "whitespace",
+  "text": "Winter is coming!!!"
+}
+
+POST _analyze
+{
+  "char_filter": [
+    "html_strip"
+  ],
+  "tokenizer": "whitespace",
+  "filter": [
+    "uppercase"
+  ],
+  "text": "<B>This is mixed analyzer</B>"
+}
+
+# english
+POST _analyze
+{
+  "analyzer": "english",
+  "text": "Winter is coming!!!"
+}
+
+# 이미 정의되어 있는 analyzer 를 그대로 가져다가 사용하는 방식
+PUT index_analyzer_settings1
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_analyzer": {
+          "type": "standard",
+          "max_token_length": 5,
+          "stopwords": "_english_"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "comment": {
+        "type": "text",
+        "analyzer": "my_analyzer"
+      }
+    }
+  }
+}
+
+POST index_analyzer_settings1/_analyze
+{
+  "analyzer": "my_analyzer",
+  "text": "<B>This is Standard Analyzer</B>"
+}
+
+POST index_analyzer_settings1/_doc
+{
+  "comment": "<B>This is Standard Analyzer</B>"
+}
+
+GET index_analyzer_settings1/_search
+{
+  "query": {
+    "match": {
+      "comment": "standard"
+    }
+  }
+}
+
+# 이미 정의되어 있는 tokenizer 에 character filter, token filter 를 조합하여 사용하는 방식
+PUT index_analyzer_settings2
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_analyzer": {
+          "type": "custom",
+          "char_filter": [
+            "html_strip"
+          ],
+          "tokenizer": "standard",
+          "filter": [
+            "uppercase"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "comment": {
+        "type": "text",
+        "analyzer": "my_analyzer"
+      }
+    }
+  }
+}
+
+POST index_analyzer_settings2/_analyze
+{
+  "analyzer": "my_analyzer",
+  "text": "<B>This is Standard Analyzer</B>"
+}
+
+POST index_analyzer_settings2/_doc
+{
+  "comment": "<B>This is Standard Analyzer</B>"
+}
+
+GET index_analyzer_settings2/_search
+{
+  "query": {
+    "match": {
+      "comment": "standard"
+    }
+  }
+}
+
+# mixed
+PUT mixed_analyzer
+{
+  "settings": {
+    "analysis": {
+      "char_filter": {
+        "my_char_filter": {
+          "type": "mapping",
+          "mappings": [
+            ":) => _happy_",
+            ":( => _sad_"
+          ]
+        }
+      },
+      "tokenizer": {
+        "my_tokenizer": {
+          "type": "standard",
+          "max_token_length": 20
+        }
+      },
+      "filter": {
+        "my_stop": {
+          "type": "stop",
+          "stopwords": [
+            "and",
+            "is",
+            "the",
+            "this"
+          ]
+        }
+      },
+      "analyzer": {
+        "my_analyzer": {
+          "type": "custom",
+          "char_filter": [
+            "html_strip",
+            "my_char_filter"
+          ],
+          "tokenizer": "my_tokenizer",
+          "filter": [
+            "lowercase",
+            "my_stop"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "comment": {
+        "type": "text",
+        "analyzer": "my_analyzer"
+      }
+    }
+  }
+}
+
+POST mixed_analyzer/_analyze
+{
+  "analyzer": "my_analyzer",
+  "text": "<B>This is My Analyzer :)</B>"
+}
+
+POST mixed_analyzer/_doc
+{
+  "comment": "<B>This is My Analyzer :)</B>"
+}
+
+GET mixed_analyzer/_search
+{
+  "query": {
+    "match": {
+      "comment": "my analyzer"
+    }
+  }
+}
+
+DELETE nori_sample
+PUT nori_sample
+{
+  "settings": {
+    "analysis": {
+      "tokenizer": {
+        "nori_user_dict": {
+          "type": "nori_tokenizer",
+          "decompound_mode": "mixed",
+          "user_dictionary": "userdict_ko.txt"
+        }
+      },
+      "analyzer": {
+        "my_analyzer": {
+          "type": "custom",
+          "tokenizer": "nori_user_dict"
+        }
+      }
+    }
+  }
+}
+
+# Term Vector
+POST /shakespeare/account/25/_termvectors
+{
+  "fields": [
+    "text_entry"
+  ],
+  "offsets": true,
+  "payloads": true,
+  "positions": true,
+  "term_statistics": true,
+  "field_statistics": true
+}
+
+# URI Search
+GET shakespeare/_search?from=0&size=100&q=text_entry:mother&sort=line_id:asc
+
+# Request Body Search
+GET shakespeare/_search
+{
+  "query": {
+    "term": {
+      "play_name.keyword": "Henry IV"
+    }
+  }
+}
+
+# Pagination
+GET shakespeare/_search
+{
+  "from": 0,
+  "size": 2,
+  "query": {
+    "match": {
+      "text_entry": "my mother"
+    }
+  }
+}
+
+# max pagination size 변경
+PUT shakespeare/_settings
+{
+  "index.max_result_window": 10001
+}
+
+# sort
+GET shakespeare/_search
+{
+  "sort": {
+    "line_id": "desc"
+  }
+}
+
+# 스코어 계산방식
+GET shakespeare/_search
+{
+  "explain": true,
+  "from": 0,
+  "size": 2,
+  "query": {
+    "match": {
+      "text_entry": "my mother"
+    }
+  }
+}
+
+# _source filtering
+GET shakespeare/_search
+{
+  "_source": false,
+  "sort": {
+    "line_id": "desc"
+  }
+}
+
+GET shakespeare/_search
+{
+  "_source": [
+    "speaker",
+    "text_entry"
+  ],
+  "sort": {
+    "line_id": "desc"
+  }
+}
+
+GET shakespeare/_search
+{
+  "_source": [
+    "*num*"
+  ],
+  "sort": {
+    "line_id": "desc"
+  }
+}
+
+# highlight
+GET shakespeare/_search
+{
+  "_source": [
+    "play_name",
+    "speaker",
+    "text_entry"
+  ],
+  "query": {
+    "query_string": {
+      "query": "henry"
+    }
+  },
+  "highlight": {
+    "fields": {
+      "speaker": {}
+    }
+  }
+}
+
+# match query
+GET shakespeare/_search
+{
+  "query": {
+    "match": {
+      "text_entry": "my mother"
+    }
+  }
+}
+
+# boost
+GET shakespeare/_search
+{
+  "query": {
+    "match": {
+      "text_entry": {
+        "query": "my mother",
+        "boost": 2
+      }
+    }
+  }
+}
+
+# match_phrase
+GET shakespeare/_search
+{
+  "query": {
+    "match_phrase": {
+      "text_entry": "my mother did"
+    }
+  }
+}
+
+# match_phrase_prefix
+GET shakespeare/_search
+{
+  "query": {
+    "match_phrase_prefix": {
+      "text_entry": "my mother"
+    }
+  }
+}
+
+# multi match
+POST multi_match_index/_doc
+{
+  "name": "ElasticSearch Engine",
+  "comment": "It's Best Solution"
+}
+
+POST multi_match_index/_doc
+{
+  "name": "Mongo DB",
+  "comment": "What is difference ElasticSearch Engine"
+}
+
+GET multi_match_index/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "Engine",
+      "fields": [
+        "name",
+        "comment"
+      ]
+    }
+  }
+}
+
+# query_string
+GET shakespeare/_search
+{
+  "query": {
+    "query_string": {
+      "query": "henry VI*",
+      "fields": [
+        "text_entry",
+        "play_name"
+      ]
+    }
+  }
+}
+
+# term
+GET shakespeare/_search
+{
+  "query": {
+    "term": {
+      "play_name.keyword": "Henry IV"
+    }
+  }
+}
+
+# terms
+GET shakespeare/_search
+{
+  "from":0, "size": 10000,
+  "query": {
+    "terms": {
+      "speaker.keyword": [
+        "YORK",
+        "KING HENRY IV"
+      ]
+    }
+  }
+}
+
+# range
+GET shakespeare/_search
+{
+  "query": {
+    "range": {
+      "line_id": {
+        "gte": 25,
+        "lte": 30
+      }
+    }
+  }
+}
+
+# wildcard
+GET shakespeare/_search
+{
+  "query": {
+    "wildcard": {
+      "speaker.keyword": "KING HENR*"
+    }
+  }
+}
+
+# bool
+GET shakespeare/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "text_entry": {
+              "query": "my heart"
+            }
+          }
+        }
+      ],
+      "filter": [
+        {
+          "term": {
+            "speaker.keyword": "KING HENRY IV"
+          }
+        },
+        {
+          "range": {
+            "line_id": {
+              "gte": "30"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# must
+GET shakespeare/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "text_entry": {
+              "query": "my mother"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# filter
+GET shakespeare/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "match": {
+            "text_entry": {
+              "query": "my mother"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# should 22633 All of one nature, of one substance bred, line_id 14
+GET shakespeare/_search
+{
+  "from": 0, "size": 10000,
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "text_entry": {
+              "query": "my mother",
+              "boost": 2
+            }
+          }
+        },
+        {
+          "term": {
+            "speaker.keyword": {
+              "value": "KING HENRY IV"
+            }
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}
+
+# must_not
+GET shakespeare/_search
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "match": {
+            "text_entry": {
+              "query": "my mother"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+# bool all
+GET shakespeare/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "gender.keyword": "F"
+          }
+        }
+      ],
+      "filter": [
+        {
+          "range": {
+            "line_id": {
+              "lte": "30"
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "match": {
+            "state": {
+              "query": "MI"
+            }
+          }
+        },
+        {
+          "match": {
+            "paly_name": {
+              "query": "Nogal"
+            }
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "match": {
+            "text_entry": "Hope"
+          }
+        }
+      ]
+    }
+  }
+}
