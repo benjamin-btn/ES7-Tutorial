@@ -213,7 +213,6 @@ GET mixed_analyzer/_search
   }
 }
 
-DELETE nori_sample
 PUT nori_sample
 {
   "settings": {
@@ -235,8 +234,9 @@ PUT nori_sample
   }
 }
 
+GET shakespeare/_search
 # Term Vector
-POST /shakespeare/account/25/_termvectors
+POST /shakespeare/_doc/gPezC3ABFjKEo3V5Mu-2/_termvectors
 {
   "fields": [
     "text_entry"
@@ -252,7 +252,7 @@ POST /shakespeare/account/25/_termvectors
 GET shakespeare/_search?from=0&size=100&q=text_entry:mother&sort=line_id:asc
 
 # Request Body Search
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "term": {
@@ -262,7 +262,7 @@ GET shakespeare/_search
 }
 
 # Pagination
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "from": 0,
   "size": 2,
@@ -280,7 +280,7 @@ PUT shakespeare/_settings
 }
 
 # sort
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "sort": {
     "line_id": "desc"
@@ -288,7 +288,7 @@ GET shakespeare/_search
 }
 
 # 스코어 계산방식
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "explain": true,
   "from": 0,
@@ -301,7 +301,7 @@ GET shakespeare/_search
 }
 
 # _source filtering
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "_source": false,
   "sort": {
@@ -309,7 +309,7 @@ GET shakespeare/_search
   }
 }
 
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "_source": [
     "speaker",
@@ -320,7 +320,7 @@ GET shakespeare/_search
   }
 }
 
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "_source": [
     "*num*"
@@ -331,7 +331,7 @@ GET shakespeare/_search
 }
 
 # highlight
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "_source": [
     "play_name",
@@ -351,7 +351,7 @@ GET shakespeare/_search
 }
 
 # match query
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "match": {
@@ -361,7 +361,7 @@ GET shakespeare/_search
 }
 
 # boost
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "match": {
@@ -374,21 +374,21 @@ GET shakespeare/_search
 }
 
 # match_phrase
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "match_phrase": {
-      "text_entry": "my mother did"
+      "text_entry": "my mother a"
     }
   }
 }
 
 # match_phrase_prefix
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "match_phrase_prefix": {
-      "text_entry": "my mother"
+      "text_entry": "my mother d"
     }
   }
 }
@@ -406,7 +406,7 @@ POST multi_match_index/_doc
   "comment": "What is difference ElasticSearch Engine"
 }
 
-GET multi_match_index/_search
+POST multi_match_index/_search
 {
   "query": {
     "multi_match": {
@@ -420,7 +420,7 @@ GET multi_match_index/_search
 }
 
 # query_string
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "query_string": {
@@ -434,7 +434,7 @@ GET shakespeare/_search
 }
 
 # term
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "term": {
@@ -443,8 +443,20 @@ GET shakespeare/_search
   }
 }
 
-# terms
-GET shakespeare/_search
+POST shakespeare/_search
+{
+  "query": {
+    "term": {
+      "play_name.keyword": {
+        "value": "Henry IV",
+        "boost": 2.0
+      }
+    }
+  }
+}
+
+# terms 1938 YORK
+POST shakespeare/_search
 {
   "from":0, "size": 10000,
   "query": {
@@ -458,20 +470,20 @@ GET shakespeare/_search
 }
 
 # range
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "range": {
       "line_id": {
-        "gte": 25,
-        "lte": 30
+        "gte": 250,
+        "lte": 259
       }
     }
   }
 }
 
 # wildcard
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "wildcard": {
@@ -481,7 +493,7 @@ GET shakespeare/_search
 }
 
 # bool
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "bool": {
@@ -513,7 +525,7 @@ GET shakespeare/_search
 }
 
 # must
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "bool": {
@@ -531,16 +543,14 @@ GET shakespeare/_search
 }
 
 # filter
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "bool": {
       "filter": [
         {
-          "match": {
-            "text_entry": {
-              "query": "my mother"
-            }
+          "term": {
+            "speaker.keyword": "KING HENRY IV"
           }
         }
       ]
@@ -549,7 +559,7 @@ GET shakespeare/_search
 }
 
 # should 22633 All of one nature, of one substance bred, line_id 14
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "from": 0, "size": 10000,
   "query": {
@@ -570,6 +580,34 @@ GET shakespeare/_search
             }
           }
         }
+      ]
+    }
+  }
+}
+
+POST shakespeare/_search
+{
+  "from": 0, "size": 1000,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "speaker.keyword": {
+              "value": "KING HENRY IV"
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "match": {
+            "text_entry": {
+              "query": "her mother",
+              "boost": 2
+            }
+          }
+        }
       ],
       "minimum_should_match": 1
     }
@@ -577,7 +615,7 @@ GET shakespeare/_search
 }
 
 # must_not
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "bool": {
@@ -595,14 +633,14 @@ GET shakespeare/_search
 }
 
 # bool all
-GET shakespeare/_search
+POST shakespeare/_search
 {
   "query": {
     "bool": {
       "must": [
         {
-          "term": {
-            "gender.keyword": "F"
+          "match": {
+            "text_entry": "my mother"
           }
         }
       ],
@@ -610,31 +648,28 @@ GET shakespeare/_search
         {
           "range": {
             "line_id": {
-              "lte": "30"
+              "gte": "30"
             }
           }
         }
       ],
       "should": [
         {
-          "match": {
-            "state": {
-              "query": "MI"
-            }
+          "term": {
+            "speaker.keyword": "KING HENRY IV"
           }
         },
         {
-          "match": {
-            "paly_name": {
-              "query": "Nogal"
-            }
+          "term": {
+            "speaker.keyword": "YORK"
           }
         }
       ],
+      "minimum_should_match": 1,
       "must_not": [
         {
           "match": {
-            "text_entry": "Hope"
+            "play_name": "Part"
           }
         }
       ]
