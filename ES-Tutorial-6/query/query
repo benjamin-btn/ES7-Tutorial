@@ -103,6 +103,7 @@ GET keyword_index/_search
     }
   }
 }
+# exact match 는 term 쿼리가 해주는데 굳이 match 쿼리를 쓸 필요가..
 
 GET keyword_index/_search
 {
@@ -112,6 +113,7 @@ GET keyword_index/_search
     }
   }
 }
+# keyword 로 생성된 문자열은 애널라이징 되지 않습니다.
 
 POST keyword_index/_analyze
 {
@@ -338,6 +340,27 @@ POST nested_index/_doc
 
 GET nested_index
 
+POST nested_index/_doc
+{
+  "user": [
+    {
+      "first": "John",
+      "last": "Smith"
+    },
+    {
+      "first": "Alice",
+      "last": "White"
+    },
+    {
+      "first": "btn",
+      "middle": "park",
+      "last": "benjamin"
+    }
+  ]
+}
+
+GET nested_index
+
 # nested field 검색하기
 GET nested_index/_search
 {
@@ -438,6 +461,8 @@ POST refresh/_doc
   "msg": "first doc"
 }
 
+POST refresh/_search
+
 PUT refresh/_settings
 {
   "index": {
@@ -465,12 +490,12 @@ POST refresh/_doc
 }
 
 # 검색을 해도 인덱싱된 문서가 검색되지 않음
-GET refresh/_search
+POST refresh/_search
 
 # ?refresh=true 로 문서 인덱싱
 POST refresh/_doc?refresh=true
 {
-  "msg": "fourth doc"
+  "msg": "third doc"
 }
 
 # refresh interval 이 꺼져있음에도 인덱싱 가능
@@ -478,10 +503,10 @@ GET refresh/_search
 
 PUT refresh/_settings
 {
-  "index": {
-    "refresh_interval": null
-  }
+  "index.refresh_interval": null
 }
+
+POST refresh/_search
 
 ## 쿼리 튜닝하기
 
@@ -501,6 +526,21 @@ PUT myindex
       "full_name": {
         "type": "text"
       }
+    }
+  }
+}
+
+POST myindex/_doc
+{
+  "first_name": "btn",
+  "last_name": "benjamin"
+}
+
+POST myindex/_search
+{
+  "query": {
+    "match": {
+      "full_name": "btn"
     }
   }
 }
@@ -707,6 +747,24 @@ GET bank/_search
   }
 }
 
+# Node Query Cache Info 
+GET _cat/nodes?v&h=name,qcm,qce
+
+# Shard Request Cache Info 
+GET _cat/nodes?v&h=name,rcm,rce
+
+# Field Data Cache Info 
+GET _cat/nodes?v&h=name,fm,fe
+
+GET _cat/nodes?v&h=name,qcm,qce,rcm,rce,fm,fe
+
+# cache clear
+POST twitter/_cache/clear?query=true
+POST twitter/_cache/clear?request=true 
+POST twitter/_cache/clear?fielddata=true  
+
+POST _cache/clear?request=true 
+GET _cat/nodes?v&h=name,rcm,rce
 
 # 인덱싱이 끝난 인덱스는 검색성능을 위해 샤드들의 세그먼트를 하나로 병합
 GET _cat/segments/shakespeare?v
@@ -718,21 +776,41 @@ GET _cat/segments/shakespeare?v
 # Routing key 를 이용한 인덱싱
 POST rindex/_doc?routing=user1 
 {  
-  "title": "This is a document" 
+  "title": "This is a document for user1" 
 }
 
-GET rindex/_search
-
-POST rindex/_doc?routing=user1 
+POST rindex/_doc?routing=user2
 {  
-  "title": "This is a document for fastcampus" 
+  "title": "This is a document for user2" 
+}
+
+GET rindex/_search?routing=user1
+GET rindex/_search?routing=user2
+
+
+POST rindex/_search?routing=user2
+{
+  "query": {
+    "match": {
+      "title": "user1"
+    }
+  }
+}
+
+POST rindex/_search?routing=user1
+{
+  "query": {
+    "match": {
+      "title": "user1"
+    }
+  }
 }
 
 POST rindex/_search
 {
   "query": {
-    "match": {
-      "title": "fastcampus"
+    "terms": {
+      "_routing": [ "user1" ]
     }
   }
 }
