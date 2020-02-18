@@ -6,8 +6,8 @@
     - master: true
     - data: false
     - heap_size: 2
-    - es_version: 6.6.0
-    - filebeat_version : 6.6.0
+    - es_version: 6.8.6
+    - filebeat_version : 6.8.6
   roles:
     - elasticsearch
     - filebeat
@@ -19,8 +19,8 @@
     - master: false
     - data: true
     - heap_size: 2
-    - es_version: 6.6.0
-    - filebeat_version : 6.6.0
+    - es_version: 6.8.6
+    - filebeat_version : 6.8.6
   roles:
     - elasticsearch
     - filebeat
@@ -32,8 +32,8 @@
     - master: true
     - data: true
     - heap_size: 2
-    - es_version: 6.6.0
-    - filebeat_version : 6.6.0
+    - es_version: 6.8.6
+    - filebeat_version : 6.8.6
   roles:
     - elasticsearch
     - filebeat
@@ -42,7 +42,7 @@
   hosts: filebeat-node
   vars:
     - cluster_name: ansible-test
-    - filebeat_version : 6.6.0
+    - filebeat_version : 6.8.6
   roles:
     - filebeat
 

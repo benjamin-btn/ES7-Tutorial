@@ -9,9 +9,8 @@ actions:
       value: '^[a-z].*'
       exclude:
     - filtertype: age
-      source: name
+      source: creation_date
       direction: older
-      timestring: '%Y-%m-%d'
       unit: days
-      unit_count: 1
+      unit_count: 0
       exclude:

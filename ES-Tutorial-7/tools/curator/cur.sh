@@ -179,7 +179,7 @@ function towarm_indices
 
 if [ -z $1 ]; then
         echo "##################### Menu ##############"
-        echo " $ ./cur.sh [Command]"
+        echo " $ ./cur.sh [Command] [real]"
         echo "#####################%%%%%%##############"
         echo "         1 : delete all indices by duration without kibana index"
         echo "         2 : create test indices"
