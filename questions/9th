@@ -14,56 +14,21 @@ POST test2
 DELETE test[0-9]
 DELETE test*
 
-# Q2. 클러스터 샤드 라우팅 primaries, new_primaries 의 차이
+# Q2. 클러스터 샤드 라우팅 primaries, new_primaries 의 차이
 # A2. 상황별로 정리
-# 각 모드별로 클러스터 내에 노드가 모두 있을 때
-# [인덱스 추가]
-# primaries - 모든 노드에 새롭게 추가되는 인덱스에 대해서만 프라이머리 샤드만 추가, 레플리카는 unassigned
-# new_primaries - 모든 노드에 새롭게 추가되는 인덱스에 대해서만 프라이머리 샤드>만 추가, 레플리카는 unassigned
-# -> 동일
+# 각 모드별로 클러스터 내에 노드가 모두 있을 때
+# [인덱스 추가]
+# primaries - 모든 노드에 새롭게 추가되는 인덱스에 대해서만 프라이머리 샤드만 추가, 레플리카는 unassigned
+# new_primaries - 모든 노드에 새롭게 추가되는 인덱스에 대해서만 프라이머리 샤드>만 추가, 레플리카는 unassigned
+# -> 동일
 #
-# 각 모드별로 클러스터에 노드를 추가할 때
-# [샤드 배치]
-# primaries - 투입되면 프라이머리 샤드들을 새롭게 추가된 노드에게 배치
-# new_primaries - 투입되면 샤드를 받지 않은 채로 노드만 추가됨
-# [인덱스 추가]
-# primaries - 모든 노드에 새롭게 추가되는 인덱스에 대해서만 프라이머리 샤드만 추가, 레플리카는 unassigned
-# new_primaries - 새롭게 추가된 노드에만 프라이머리 샤드들을 배치
-
-PUT _cluster/settings
-{
-  "transient" : {
-    "cluster.routing.allocation.enable" : "new_primaries"
-  }
-}
-
-PUT _cluster/settings
-{
-  "transient" : {
-    "cluster.routing.allocation.enable" : null
-  }
-}
-PUT _cluster/settings
-{
-  "transient" : {
-    "cluster.routing.allocation.enable" : "primaries"
-  }
-}
-
-PUT _cluster/settings
-{
-  "transient" : {
-    "cluster.routing.allocation.enable" : null
-  }
-}
-
-PUT new_primaries_scaleout
-{
-  "settings": {
-    "index.number_of_shards": 3,
-    "index.unassigned.node_left.delayed_timeout": "5s"
-  }
-}
+# 각 모드별로 클러스터에 노드를 추가할 때
+# [샤드 배치]
+# primaries - 투입되면 프라이머리 샤드들을 새롭게 추가된 노드에게 배치
+# new_primaries - 투입되면 샤드를 받지 않은 채로 노드만 추가됨
+# [인덱스 추가]
+# primaries - 모든 노드에 새롭게 추가되는 인덱스에 대해서만 프라이머리 샤드만 추가, 레플리카는 unassigned
+# new_primaries - 새롭게 추가된 노드에만 프라이머리 샤드들을 배치
 
 PUT _all/_settings
 {
@@ -72,7 +37,85 @@ PUT _all/_settings
   }
 }
 
-# Q3. search analyzer 는 무엇인가요?
+GET _cluster/settings
+
+PUT _cluster/settings
+{
+  "transient" : {
+    "cluster.routing.allocation.enable" : null
+  }
+}
+
+PUT test1
+{
+  "settings": {
+    "index.number_of_shards": 3,
+    "index.number_of_replicas": 1,
+    "index.unassigned.node_left.delayed_timeout": "5s"
+  }
+}
+
+# node stop
+
+PUT _cluster/settings
+{
+  "transient" : {
+    "cluster.routing.allocation.enable" : "primaries"
+  }
+}
+
+# node start
+# 투입된 노드에 프라이머리 샤드만 할당
+
+PUT test2
+{
+  "settings": {
+    "index.number_of_shards": 3,
+    "index.number_of_replicas": 1,
+    "index.unassigned.node_left.delayed_timeout": "5s"
+  }
+}
+
+# 노드들에게 프라이머리 샤드만 할당
+
+PUT _cluster/settings
+{
+  "transient" : {
+    "cluster.routing.allocation.enable" : null
+  }
+}
+
+# node stop
+
+PUT _cluster/settings
+{
+  "transient" : {
+    "cluster.routing.allocation.enable" : "new_primaries"
+  }
+}
+
+# node start
+# 투입된 노드에 기존 인덱스의 샤드는 할당하지 않음
+
+PUT test3
+{
+  "settings": {
+    "index.number_of_shards": 3,
+    "index.number_of_replicas": 1
+  }
+}
+
+# 새롭게 생성한 인덱스의 샤드는 모든 노드들에게 할당
+# 다만, 하나의 노드에만 샤드가 분배되는 것 처럼 보이는 것은 투입된 노드가 다른 노드들에 비해 샤드가 없기 때문에 disk threshold 에 의해 그렇게 보이는 것
+
+PUT _cluster/settings
+{
+  "transient" : {
+    "cluster.routing.allocation.enable" : null
+  }
+}
+
+# Q3. search analyzer 는 무엇인가요?
 # A. 보통의 경우 인덱스에 애널라이저를 설정하고, 특정 text field 에 해당 애널라>이저를 설정하면 색인할 때 해당 애널라이저의 방식을 따라 토큰이 생성됩니다. 이후>에 검색 시에도 동일한 애널라이저를 통해 토큰을 생성하여 일치되는 토큰이 있을 때 검색이 됩니다.
 # 그런데,  N-grams. Edge N-grams 같은 토커나이저들은 색인 시에 실제 사용자가 검>색하지 않을 토큰이 다량으로 생성되는 방식으로 토큰을 생성합니다.
 # ex) Foxes (min, max gram 3) -> Fox, oxe, xes
@@ -214,7 +257,7 @@ POST search_analyzer_index2/_search
   }
 }
 
-# Q4. 쿼리가 한 번이라도 수행되었을 때 받은 스코어를 유지할 수 있는 방법은 없나요?
+# Q4. 쿼리가 한 번이라도 수행되었을 때 받은 스코어를 유지할 수 있는 방법은 없나요?
 # A4. constant_score 를 사용하여 처음부터 스코어를 지정해주는 방법이 있습니다. 이 쿼리는 사용자가 특정 쿼리에 스코어를 지정하여 지속적으로 사용할 것이 예상되기 때문에 filter 절 내에 정의하도록 구성되어 있습니다.
 
 # score1, 2, 3...
@@ -241,8 +284,8 @@ GET bank/_search
     }
 }
 
-# Q5.  bulk size 조정 방법
-# 벌크 사이즈의 조정은 클라에서 합니다. ES 에서 조정할 수 있는 것은 bulk job 이 코어를 몇 개 까지 쓸 수 있게 할 것인지, 코어를 다 써서 더 이상 할당할 코어가 없을 때 요청된 job 들을 얼마나 저장할지만 결정합니다. 6장에 해당 내용이 있습니다.
+# Q5.  bulk size 조정 방법
+# 벌크 사이즈의 조정은 클라에서 합니다. ES 에서 조정할 수 있는 것은 bulk job 이 코어를 몇 개 까지 쓸 수 있게 할 것인지, 코어를 다 써서 더 이상 할당할 코어가 없을 때 요청된 job 들을 얼마나 저장할지만 결정합니다. 6장에 해당 내용이 있습니다.
 
 # Q6. term 쿼리는 스코어가 일정한데 어떤 사항을 기준으로 순서가 결정되나요?
 # A6. 순서는 랜덤하게 결정됩니다. 스코어가 모두 동일하기 때문에 전체 문서가 필요하면 pagination 을 활용해야 합니다.
@@ -308,6 +351,7 @@ DELETE _scripts/my_search_template
 # A9. ES 공식 문서에 해당 필드는 디스크에 저장되지 않는다고 명시되어 있습니다.
 # _source 필드는 디스크에 저장되는 필드입니다. 즉, copy_to 는 쿼리 타임에 메모리 상에 저장되었다가 소멸되는 것으로 보입니다.
 
+DELETE rindex
 # Routing key 를 이용한 인덱싱
 POST rindex/_doc?routing=user1
 {
@@ -319,6 +363,7 @@ POST rindex/_doc?routing=user2
   "title": "This is a document for user2"
 }
 
+GET rindex/_search
 GET rindex/_search?routing=user1
 GET rindex/_search?routing=user2
 
@@ -345,7 +390,7 @@ POST rindex/_search
 {
   "query": {
     "terms": {
-      "_routing": [ "user1" ]
+      "_routing": [ "user1", "user2" ]
     }
   }
 }
