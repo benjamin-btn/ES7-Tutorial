@@ -297,3 +297,56 @@ POST shakespeare/_search/template
 }
 
 DELETE _scripts/my_search_template
+
+# Q8. 저장된 Routing Key 들은 어디서 볼 수 있나요?
+# A8. Routing Key 는 문서의 ID 를 대체하여 샤드 할당 알고리즘에 의해 문서를 색인합니다.
+# 문서의 ID 와 마찬가지로 별도의 리스트를 확인하기 어려운 정보로 확인됩니다.
+# 해당 Key 는 특정 샤드로 데이터를 저장하고 싶을 때 사용하는 unique key 입니다.
+# _source field 에서 자동으로 사용할 수 없는 항목이니 문서의 필드에 함께 추가하여 색인하는 게 좋을 것 같습니다.
+
+# Q9. copy_to 필드는 어디에 저장되나요?
+# A9. ES 공식 문서에 해당 필드는 디스크에 저장되지 않는다고 명시되어 있습니다.
+# _source 필드는 디스크에 저장되는 필드입니다. 즉, copy_to 는 쿼리 타임에 메모리 상에 저장되었다가 소멸되는 것으로 보입니다.
+
+# Routing key 를 이용한 인덱싱
+POST rindex/_doc?routing=user1
+{
+  "title": "This is a document for user1"
+}
+
+POST rindex/_doc?routing=user2
+{
+  "title": "This is a document for user2"
+}
+
+GET rindex/_search?routing=user1
+GET rindex/_search?routing=user2
+
+
+POST rindex/_search?routing=user2
+{
+  "query": {
+    "match": {
+      "title": "user1"
+    }
+  }
+}
+
+POST rindex/_search?routing=user1
+{
+  "query": {
+    "match": {
+      "title": "user1"
+    }
+  }
+}
+
+POST rindex/_search
+{
+  "query": {
+    "terms": {
+      "_routing": [ "user1" ]
+    }
+  }
+}
+
